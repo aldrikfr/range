@@ -1,9 +1,11 @@
 opam-version : "2.0"
 name : "range"
 version: "0.1"
-synopsis: "fold on integer range"
+synopsis: "Fold on integer range"
 description: """
 Enable folding on integer range with split capacities
+for making distributed computing easier with libraries
+like functory
 """
 maintainer : "Aldrik KLEBER <contact@aldrik.net>"
 authors : "Aldrik KLEBER"
