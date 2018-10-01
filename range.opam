@@ -1,0 +1,7 @@
+opam-version : "2.0"
+name : "range"
+maintainer : "Aldrik KLEBER <contact@aldrik.net>"
+authors : "Aldrik KLEBER"
+license : "gpl-v3"
+homepage : "localhost"
+bug-reports :"localhost"
