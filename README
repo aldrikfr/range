@@ -1,0 +1,5 @@
+Range Library
+
+This small library has two goals :
+ * enable to fold a sequence of integers like a list
+ * split a range, making distributed computing easy
