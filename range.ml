@@ -32,19 +32,19 @@ the Free Software Foundation, either version 3 of the License, or
       loop (from n new_stop :: acc) (succ new_stop) in
     loop [] start
 
-    let compare a b = a - b
+  let compare a b = a - b
 
-    let min a b = compare a b
+  let min a b = compare a b
 
-    let contain {start;stop} e = start <= e || e <= stop
+  let contain {start;stop} e = start <= e || e <= stop
 
-    let cross {start_a;stop_a} {start_b;stop_b} =
-      {start = (max start_a start_b) ; stop = (min stop_a stop_b)}
+  let cross {start_a;stop_a} {start_b;stop_b} =
+    {start = (max start_a start_b) ; stop = (min stop_a stop_b)}
 
-    let join {start_a;stop_a} {start_b;stop_b} =
-      {start = (min start_a start_b) ; stop = (max stop_a stop_b)}
+  let join {start_a;stop_a} {start_b;stop_b} =
+    {start = (min start_a start_b) ; stop = (max stop_a stop_b)}
 
-    let map f {start;stop} = {start=(f start);stop=(f stop)}
+  let map f {start;stop} = {start=(f start);stop=(f stop)}
 
-    let aggregage f {start_a;stop_a} {start_b;stop_b} =
-      {start = (f start_a start_b) ; stop = (f stop_a stop_b)}
+  let aggregage f {start_a;stop_a} {start_b;stop_b} =
+    {start = (f start_a start_b) ; stop = (f stop_a stop_b)}
