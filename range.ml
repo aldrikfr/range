@@ -6,40 +6,40 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version. *)
 
-  type t = {
-    start : int;
-    stop : int
-  }
-  let implode f r = f r.start r.stop
+type t = {
+  start : int;
+  stop : int
+}
+let implode f r = f r.start r.stop
 
-  let from start stop = { start = (min start stop) ; stop = (max start stop)}
+let from start stop = { start = (min start stop) ; stop = (max start stop)}
 
-  let fold f acc {start;stop} =
-    let rec loop acc n =
-      if n > stop then acc else
-      loop (f acc n) (succ n) in
-    loop acc start
+let fold f acc {start;stop} =
+  let rec loop acc n =
+    if n > stop then acc else
+    loop (f acc n) (succ n) in
+  loop acc start
 
 
-  let length = implode (fun start stop -> stop - start)
+let length = implode (fun start stop -> stop - start)
 
-  let split minimal n r =
-    let diff = length r  in
-    if (diff <= n) || (diff < minimal) then [from r.start r.stop] else
-    let delta =  diff / n in
-    let rec loop acc n =
-      if n > r.stop then acc else
-      let new_stop = n + delta in
-      if new_stop > r.stop then (from n r.stop) :: acc else
-      loop (from n new_stop :: acc) (succ new_stop) in
-    loop [] r.start
+let split minimal n r =
+  let diff = length r  in
+  if (diff <= n) || (diff < minimal) then [from r.start r.stop] else
+  let delta =  diff / n in
+  let rec loop acc n =
+    if n > r.stop then acc else
+    let new_stop = n + delta in
+    if new_stop > r.stop then (from n r.stop) :: acc else
+    loop (from n new_stop :: acc) (succ new_stop) in
+  loop [] r.start
 
-  let contain {start;stop} e = start <= e || e <= stop
+let contain {start;stop} e = start <= e || e <= stop
 
-  let cross a b = {start = (max a.start b.start) ; stop = (min a.stop b.stop)}
+let cross a b = {start = (max a.start b.start) ; stop = (min a.stop b.stop)}
 
-  let join a b = {start = (min a.start b.start) ; stop = (max a.stop b.stop)}
+let join a b = {start = (min a.start b.start) ; stop = (max a.stop b.stop)}
 
-  let map f {start;stop} = {start=(f start);stop=(f stop)}
+let map f {start;stop} = {start=(f start);stop=(f stop)}
 
-  let aggregate f a b = {start = (f a.start b.start) ; stop = (f a.stop b.stop)}
+let aggregate f a b = {start = (f a.start b.start) ; stop = (f a.stop b.stop)}
