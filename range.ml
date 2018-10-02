@@ -29,3 +29,11 @@ the Free Software Foundation, either version 3 of the License, or
       if new_stop > stop then (from n stop) :: acc else
       loop (from n new_stop :: acc) (succ new_stop) in
     loop [] start
+
+    let contain {start;stop} e = start <= e || e <= stop
+
+    let cross {start_a;stop_a} {start_b;stop_b} =
+      {start = (max start_a start_b) ; stop = (min stop_a stop_b)}
+
+    let join {start_a;stop_a} {start_b;stop_b} =
+      {start = (min start_a start_b) ; stop = (max stop_a stop_b)}
