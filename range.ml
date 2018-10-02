@@ -25,7 +25,7 @@ let length = implode (fun start stop -> stop - start)
 
 let split minimal n r =
   let diff = length r  in
-  if (diff <= n) || (diff < minimal) then [from r.start r.stop] else
+  if (diff <= n) || (diff < minimal) then [r] else
   let delta =  diff / n in
   let rec loop acc n =
     if n > r.stop then acc else
