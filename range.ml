@@ -10,6 +10,7 @@ the Free Software Foundation, either version 3 of the License, or
     start : int;
     stop : int
   }
+  let implode f r = f r.start r.stop
 
   let from start stop = { start = (min start stop) ; stop = (max start stop)}
 
@@ -19,28 +20,23 @@ the Free Software Foundation, either version 3 of the License, or
       loop (f acc n) (succ n) in
     loop acc start
 
-  let split minimal n {start;stop} =
-    let diff = (stop - start) in
-    if (diff <= n) || (diff < minimal) then [from start stop] else
+  let split minimal n r =
+    let diff = r |> implode (fun start stop -> stop - start) in
+    if (diff <= n) || (diff < minimal) then [from r.start r.stop] else
     let delta =  diff / n in
     let rec loop acc n =
-      if n > stop then acc else
+      if n > r.stop then acc else
       let new_stop = n + delta in
-      if new_stop > stop then (from n stop) :: acc else
+      if new_stop > r.stop then (from n r.stop) :: acc else
       loop (from n new_stop :: acc) (succ new_stop) in
-    loop [] start
+    loop [] r.start
 
   let contain {start;stop} e = start <= e || e <= stop
 
-  let cross {start_a;stop_a} {start_b;stop_b} =
-    {start = (max start_a start_b) ; stop = (min stop_a stop_b)}
+  let cross a b = {start = (max a.start b.start) ; stop = (min a.stop b.stop)}
 
-  let join {start_a;stop_a} {start_b;stop_b} =
-    {start = (min start_a start_b) ; stop = (max stop_a stop_b)}
+  let join a b = {start = (min a.start b.start) ; stop = (max a.stop b.stop)}
 
   let map f {start;stop} = {start=(f start);stop=(f stop)}
 
-  let aggregage f {start_a;stop_a} {start_b;stop_b} =
-    {start = (f start_a start_b) ; stop = (f stop_a stop_b)}
-
-  let implode f {start;stop} = f start stop
+  let aggregate f a b = {start = (f a.start b.start) ; stop = (f a.stop b.stop)}
