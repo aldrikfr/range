@@ -35,7 +35,7 @@ let split minimal n r =
     loop (from n new_stop :: acc) (succ new_stop) in
   loop [] r.start
 
-let contain {start;stop} e = start <= e || e <= stop
+let contain e r = r.start <= e || e <= r.stop
 
 let cross a b = {start = (max a.start b.start) ; stop = (min a.stop b.stop)}
 
