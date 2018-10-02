@@ -24,8 +24,9 @@ let fold f acc {start;stop} =
 let length = implode (fun start stop -> stop - start)
 
 let split minimal n r =
-  let diff = length r  in
-  if (diff <= n) || (diff < minimal) then [r] else
+  let range_big_enough minimal n size = (size <= n) || (size < minimal) in
+  let diff = length r in
+  if range_big_enough minimal n diff then [r] else
   let delta =  diff / n in
   let rec loop acc n =
     if n > r.stop then acc else
