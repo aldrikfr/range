@@ -14,4 +14,5 @@ val split : int -> int -> t -> t list
 val contain : t -> int -> bool
 val cross : t -> t -> t
 val join : t -> t -> t
- 
+val map : ( int -> int) -> t -> t
+val aggregate : (int -> int) -> t -> t -> t  
