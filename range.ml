@@ -19,8 +19,10 @@ the Free Software Foundation, either version 3 of the License, or
       loop (f acc n) (succ n) in
     loop acc start
 
+  let size {start;stop} = stop - start
+
   let split minimal n {start;stop} =
-    let diff = (stop - start) in
+    let diff = size ({start;stop}) in
     if (diff <= n) || (diff < minimal) then [from start stop] else
     let delta =  diff / n in
     let rec loop acc n =
@@ -29,3 +31,7 @@ the Free Software Foundation, either version 3 of the License, or
       if new_stop > stop then (from n stop) :: acc else
       loop (from n new_stop :: acc) (succ new_stop) in
     loop [] start
+
+    let compare a b = a - b
+
+    let min a b = compare a b
