@@ -14,13 +14,11 @@ let implode f r = f r.start r.stop
 
 let from start stop = { start = (min start stop) ; stop = (max start stop)}
 
-let fold_by step f acc {start;stop} =
+let fold f acc {start;stop} =
   let rec loop acc n =
     if n > stop then acc else
-    loop (f acc n) ( n + step) in
+    loop (f acc n) (succ n) in
   loop acc start
-
-let fold f acc {start;stop} = fold_by 1 f acc {start;stop}
 
 let length = implode (fun start stop -> stop - start)
 
