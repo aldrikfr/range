@@ -20,8 +20,11 @@ the Free Software Foundation, either version 3 of the License, or
       loop (f acc n) (succ n) in
     loop acc start
 
+
+  let length = implode (fun start stop -> stop - start)
+
   let split minimal n r =
-    let diff = r |> implode (fun start stop -> stop - start) in
+    let diff = length r  in
     if (diff <= n) || (diff < minimal) then [from r.start r.stop] else
     let delta =  diff / n in
     let rec loop acc n =
