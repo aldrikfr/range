@@ -37,3 +37,8 @@ the Free Software Foundation, either version 3 of the License, or
 
     let join {start_a;stop_a} {start_b;stop_b} =
       {start = (min start_a start_b) ; stop = (max stop_a stop_b)}
+
+    let map f {start;stop} = {start=(f start);stop=(f stop)}
+
+    let aggregage f {start_a;stop_a} {start_b;stop_b} =
+      {start = (f start_a start_b) ; stop = (f stop_a stop_b)}
