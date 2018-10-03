@@ -14,6 +14,13 @@ let implode f r = f r.start r.stop
 
 let from start stop = { start = (min start stop) ; stop = (max start stop)}
 
+let fold_by step f acc {start;stop} =
+  let rec loop acc n =
+    if n > stop then acc else
+    if n = stop then f acc n else
+    loop (f acc n) (min stop (n + step)) in
+  loop acc start
+
 let fold f acc {start;stop} =
   let rec loop acc n =
     if n > stop then acc else
@@ -26,13 +33,20 @@ let split minimal n r =
   let range_big_enough minimal n size = (size <= n) || (size < minimal) in
   let diff = length r in
   if range_big_enough minimal n diff then [r] else
-  let delta =  diff / n in
-  let rec loop acc n =
-    if n > r.stop then acc else
-    let new_stop = n + delta in
-    if new_stop > r.stop then (from n r.stop) :: acc else
-    loop (from n new_stop :: acc) (succ new_stop) in
-  loop [] r.start
+  let f acc n =
+    match acc with
+    | Some (next_start,result) ->
+        Some ((succ n), ((from next_start n) :: result)) 
+    | None -> Some (n ,[]) in
+  let packet_size =
+    (float_of_int diff) /. (float_of_int n)
+    |> ceil
+    |> int_of_float in
+  r
+  |> fold_by packet_size f None
+  |> (function
+    | None -> []
+    | Some (_,l) -> l)
 
 let contain e r = r.start <= e || e <= r.stop
 
