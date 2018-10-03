@@ -36,7 +36,6 @@ let split minimal n r =
     (float_of_int diff) /. (float_of_int n)
     |> ceil
     |> int_of_float in
-
   if (range_big_enough minimal packet_size diff) = false then [r] else
   let f acc n =
     match acc with
