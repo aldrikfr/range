@@ -30,18 +30,19 @@ let fold f acc {start;stop} =
 let length = implode (fun start stop -> stop - start)
 
 let split minimal n r =
-  let range_big_enough minimal n size = (size <= n) || (size < minimal) in
+  let range_big_enough minimal n size = (n >= minimal) && (size > minimal) in
   let diff = length r in
-  if range_big_enough minimal n diff then [r] else
-  let f acc n =
-    match acc with
-    | Some (next_start,result) ->
-        Some ((succ n), ((from next_start n) :: result)) 
-    | None -> Some (n ,[]) in
   let packet_size =
     (float_of_int diff) /. (float_of_int n)
     |> ceil
     |> int_of_float in
+
+  if (range_big_enough minimal packet_size diff) = false then [r] else
+  let f acc n =
+    match acc with
+    | Some (next_start,result) ->
+        Some ((succ n), ((from next_start n) :: result))
+    | None -> Some (n ,[]) in
   r
   |> fold_by packet_size f None
   |> (function
