@@ -6,6 +6,14 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version. *)
 
+(** Range module provide a type for handling the description of an integer
+sequence described by a start value and a stop value. This module provide
+functions to fold this range, and some basic set operation likes cross and
+join.
+The main goal is to provide a split capacity in order to make life easy for
+distributed processing. *)
+
+(** t type correspond to a integer range value *)
 type t
 
 val from : int -> int -> t
