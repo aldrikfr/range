@@ -48,7 +48,7 @@ let split minimal n r =
     | None -> []
     | Some (_,l) -> l)
 
-let contain e r = r.start <= e || e <= r.stop
+let contain e r = r.start <= e && e <= r.stop
 
 let cross a b = {start = (max a.start b.start) ; stop = (min a.stop b.stop)}
 
