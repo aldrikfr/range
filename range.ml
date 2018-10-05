@@ -50,3 +50,5 @@ let join a b = {start= min a.start b.start; stop= max a.stop b.stop}
 let map f {start; stop} = {start= f start; stop= f stop}
 
 let aggregate f a b = {start= f a.start b.start; stop= f a.stop b.stop}
+
+let to_string r = r |> implode (fun start stop -> (string_of_int start) ^ ":" ^ (string_of_int stop))

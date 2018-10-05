@@ -16,3 +16,4 @@ val cross : t -> t -> t
 val join : t -> t -> t
 val map : ( int -> int) -> t -> t
 val aggregate : (int -> int -> int) -> t -> t -> t
+val to_string : t -> string
