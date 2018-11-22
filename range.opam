@@ -17,4 +17,4 @@ depends: [
 "ocaml" {>= "4.07.0"}
 "ocamlfind"
 "dune" ]
-build: ["dune" "build" "-p" name]
+build: ["dune" "build"]
