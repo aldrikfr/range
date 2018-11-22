@@ -25,7 +25,12 @@ let fold f acc {start; stop} =
   loop acc start
 
 let iter f {start; stop} =
-  let rec loop n = if n > stop then () else (f n;loop (succ n)) in
+  let rec loop n =
+    if n > stop then ()
+    else (
+      f n ;
+      loop (succ n) )
+  in
   loop start
 
 let length = implode (fun start stop -> stop - start)
