@@ -10,6 +10,7 @@ type t
 
 val from : int -> int -> t
 val fold : ('a -> int -> 'a) -> 'a -> t -> 'a
+val iter : (int -> unit) -> t -> unit
 val split : int -> int -> t -> t list
 val contain : int -> t -> bool
 val cross : t -> t -> t

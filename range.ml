@@ -24,6 +24,10 @@ let fold f acc {start; stop} =
   let rec loop acc n = if n > stop then acc else loop (f acc n) (succ n) in
   loop acc start
 
+let iter f {start; stop} =
+  let rec loop n = if n > stop then () else (f n;loop (succ n)) in
+  loop start
+
 let length = implode (fun start stop -> stop - start)
 
 let split minimal n r =
