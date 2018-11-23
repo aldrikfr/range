@@ -1,14 +1,4 @@
-(env
-  (dev
-    (flags (:standard -w @A))
-  )
- (release
-    (ocamlopt_flags (:standard -fno-PIC -O3))
-  )
-)
-
 (library
  (name        range)
  (public_name range)
- (modes native)
  )

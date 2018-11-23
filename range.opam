@@ -1,6 +1,6 @@
 opam-version : "2.0"
 name : "range"
-version: "0.1"
+version: "0.3"
 synopsis: "Fold on integer range"
 description: """
 Enable folding on integer range with split capacities
@@ -11,6 +11,9 @@ maintainer : "Aldrik KLEBER <contact@aldrik.net>"
 authors : "Aldrik KLEBER"
 license : "gpl-v3"
 homepage : "https://github.com/aldrikfr/range"
+dev-repo: "git+https://github.com/aldrikfr/range"
 bug-reports :"https://github.com/aldrikfr/range/issues"
-depends: [ "ocaml" "dune" ]
-build: ["dune" "build" "-p" name]
+depends: [
+"ocaml" {>= "4.01.0"}
+"dune" ]
+build: ["dune" "build"]
