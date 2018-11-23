@@ -16,10 +16,16 @@ distributed processing. *)
 (** t type correspond to a integer range value *)
 type t
 
-(** from function take two integers as parameters and create a range.
+(**
+from int_value -> int_value will create a t value representing the range
+described by the two values given in parameter.
 Usage from 2 3 and from 3 2 are equivalent *)
 val from : int -> int -> t
 
+(** fold f acc_init range_value result
+fold all the integers part of range value aplying f to them and the accumulator.
+The result is the last value of acc. The behaviour is equivalent to a list fold
+function. *)
 val fold : ('a -> int -> 'a) -> 'a -> t -> 'a
 
 val iter : (int -> unit) -> t -> unit
