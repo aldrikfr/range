@@ -16,6 +16,8 @@ distributed processing. *)
 (** t type correspond to a integer range value *)
 type t
 
+(** from function take two integers as parameters and create a range.
+Usage from 2 3 and from 3 2 are equivalent *)
 val from : int -> int -> t
 
 val fold : ('a -> int -> 'a) -> 'a -> t -> 'a
