@@ -13,13 +13,7 @@ license : "gpl-v3"
 homepage : "https://github.com/aldrikfr/range"
 dev-repo: "git+https://github.com/aldrikfr/range"
 bug-reports :"https://github.com/aldrikfr/range/issues"
-url {
-  src:
-    "https://github.com/aldrikfr/range/releases/download/0.3/range-0.3.zip"
-  checksum:
-  "md5=7f763e8c47e8369274ee400c640532d4"
-}
 depends: [
 "ocaml" {>= "4.01.0"}
 "dune" {build}]
-build: ["dune" "build" "-j" jobs]
+build: ["dune" "build" "-p" name "-j" jobs]
