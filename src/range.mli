@@ -55,6 +55,13 @@ val filter_on : (int -> bool) -> t -> t
     @return value of the accumulator after reading all elements **)
 val fold : ('a -> int -> 'a) -> 'a -> t -> 'a
 
+(** iter apply a function with side effect on all values of the range. This
+    function support filtering.
+
+    @param f function receiving an integer and returning unit
+    @param range value
+    @return unit
+   **)
 val iter : (int -> unit) -> t -> unit
 
 val split : int -> int -> t -> t list
