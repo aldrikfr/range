@@ -64,6 +64,15 @@ val fold : ('a -> int -> 'a) -> 'a -> t -> 'a
    **)
 val iter : (int -> unit) -> t -> unit
 
+(** split a range value into a list of smaller range, useful for batching in
+    parallel processing.
+    
+    @param minimal size of a range
+    @param count number of subranges contained in the list.
+    @param range value to split
+    @return list of ranges with a size of minimal or greater, the list having
+    count elements max.
+    **)
 val split : int -> int -> t -> t list
 
 val contain : int -> t -> bool
