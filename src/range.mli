@@ -30,10 +30,8 @@ Usage from 2 3 and from 3 2 are equivalent
  *)
 val from : int -> int -> t
 
-(** fold f acc_init range_value result
-fold all the integers part of range value aplying f to them and the accumulator.
-The result is the last value of acc. The behaviour is equivalent to a list fold
-function. *)
+val filter_on : (int -> bool) -> t -> t
+
 val fold : ('a -> int -> 'a) -> 'a -> t -> 'a
 
 val iter : (int -> unit) -> t -> unit
