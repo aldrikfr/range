@@ -27,23 +27,16 @@ let filter_on f = function
     let new_filter e = f_prev_filter e && f e in
     Filtered (r,new_filter)
 
+let rec fold_by_loop {start; stop} step f acc n =
+  if n > stop then acc
+  else if n = stop then f acc n
+  else fold_by_loop {start; stop} step f (f acc n) (min stop (n + step))
 
 let fold_by step f acc = function
-  | Unfiltered {start; stop}->
-    let rec loop acc n =
-      if n > stop then acc
-      else if n = stop then f acc n
-      else loop (f acc n) (min stop (n + step))
-    in
-    loop acc start
-  | Filtered ({start; stop},f_filter) ->
-    let filter acc n = if f_filter n then f acc n else acc in
-    let rec loop acc n =
-      if n > stop then acc
-      else if n = stop then filter acc n
-      else loop (filter acc n) (min stop (n + step))
-    in
-    loop acc start
+  | Unfiltered r -> fold_by_loop r step f acc r.start
+  | Filtered (r,f_filter) ->
+    let f_with_filter acc n = if f_filter n then f acc n else acc in
+    fold_by_loop r step f_with_filter acc r.start
 
 let rec fold_loop {start; stop} f acc n =
   if n > stop
