@@ -127,5 +127,6 @@ let aggregate f a b =
   let rb = get_range_record_from b in
   from (f ra.start rb.start) (f ra.stop rb.stop)
 
-let to_string =
-  implode (fun start stop -> string_of_int start ^ ":" ^ string_of_int stop)
+let to_string = function
+| Unfiltered r -> string_of_int r.start ^ ":" ^ string_of_int r.stop)
+| Filtered r,_ -> "F:" ^ string_of_int r.start ^ ":" ^ string_of_int r.stop)
