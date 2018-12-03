@@ -6,13 +6,17 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version. *)
 
-type t = {start: int; stop: int}
+type range_record = {start: int; stop: int}
 
-let implode f r = f r.start r.stop
+type t = Unfiltered of range_record
 
-let from start stop = {start= min start stop; stop= max start stop}
+let implode f = function
+| Unfiltered r -> f r.start r.stop
 
-let fold_by step f acc {start; stop} =
+let from start stop = Unfiltered ({start= min start stop; stop= max start stop})
+
+let fold_by step f acc = function
+Unfiltered {start; stop}->
   let rec loop acc n =
     if n > stop then acc
     else if n = stop then f acc n
@@ -20,11 +24,13 @@ let fold_by step f acc {start; stop} =
   in
   loop acc start
 
-let fold f acc {start; stop} =
+let fold f acc  = function
+| Unfiltered {start; stop} ->
   let rec loop acc n = if n > stop then acc else loop (f acc n) (succ n) in
   loop acc start
 
-let iter f {start; stop} =
+let iter f = function
+| Unfiltered {start; stop} ->
   let rec loop n =
     if n > stop then ()
     else (
@@ -48,17 +54,31 @@ let split minimal n r =
       | Some (next_start, result) -> Some (succ n, from next_start n :: result)
       | None -> Some (n, [])
     in
-    r |> fold_by packet_size f None |> function None -> [] | Some (_, l) -> l
+    r
+    |> fold_by packet_size f None
+    |> function None -> [] | Some (_, l) -> l
 
-let contain e r = r.start <= e && e <= r.stop
+let contain e = function
+| Unfiltered r ->
+    r.start <= e && e <= r.stop
 
-let cross a b = {start= max a.start b.start; stop= min a.stop b.stop}
+let cross a b =
+  match a,b with
+  | Unfiltered ra,Unfiltered rb ->
+    Unfiltered {start= max ra.start rb.start; stop= min ra.stop rb.stop}
 
-let join a b = {start= min a.start b.start; stop= max a.stop b.stop}
+let join a b =
+  match a,b with
+  | Unfiltered ra,Unfiltered rb ->
+    Unfiltered {start= min ra.start rb.start; stop= max ra.stop rb.stop}
 
-let map f {start; stop} = {start= f start; stop= f stop}
+let map f  = function
+  | Unfiltered {start; stop} -> Unfiltered {start= f start; stop= f stop}
 
-let aggregate f a b = {start= f a.start b.start; stop= f a.stop b.stop}
+let aggregate f a b =
+match a,b with
+| Unfiltered ra,Unfiltered rb ->
+  Unfiltered {start= f ra.start rb.start; stop= f ra.stop rb.stop}
 
 let to_string =
   implode (fun start stop -> string_of_int start ^ ":" ^ string_of_int stop)
