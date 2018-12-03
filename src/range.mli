@@ -10,6 +10,8 @@ type t
 
 val from : int -> int -> t
 
+val filter_on : (int -> bool) -> t -> t 
+
 val fold : ('a -> int -> 'a) -> 'a -> t -> 'a
 
 val iter : (int -> unit) -> t -> unit
