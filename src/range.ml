@@ -56,26 +56,17 @@ let fold f acc  = function
   let f_agg acc n = if f_filter n then f acc n else acc in
   fold_loop start stop f_agg acc start
 
-let iter f = function
-| Unfiltered {start; stop} ->
-  let rec loop n =
+let rec iter_loop {start; stop} f n =
     if n > stop then ()
     else (
       f n ;
-      loop (succ n) )
-  in
-  loop start
-| Filtered ({start; stop},f_filter) ->
-  let rec loop n =
-    if n > stop then ()
-    else
-      if f_filter n then
-      begin
-        f n  ;
-        loop (succ n)
-      end
-      else loop (succ n)  in
-    loop start
+      iter_loop {start; stop} f (succ n) )
+
+let iter f = function
+| Unfiltered r -> iter_loop r f r.start
+| Filtered (r,f_filter) ->
+  let f_with_filter n = if f_filter n then f n else () in
+  iter_loop r f_with_filter r.start
 
 let length = implode (fun start stop -> stop - start)
 
