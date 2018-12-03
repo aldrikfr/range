@@ -45,16 +45,16 @@ let fold_by step f acc = function
     in
     loop acc start
 
-let rec fold_loop start stop f acc n =
+let rec fold_loop {start; stop} f acc n =
   if n > stop
     then acc
-    else fold_loop start stop f (f acc n) (succ n)
+    else fold_loop {start; stop} f (f acc n) (succ n)
 
 let fold f acc  = function
-| Unfiltered {start; stop} -> fold_loop start stop f acc start
-| Filtered ({start; stop},f_filter) ->
+| Unfiltered r -> fold_loop r f acc r.start
+| Filtered (r,f_filter) ->
   let f_agg acc n = if f_filter n then f acc n else acc in
-  fold_loop start stop f_agg acc start
+  fold_loop r f_agg acc r.start
 
 let rec iter_loop {start; stop} f n =
     if n > stop then ()
