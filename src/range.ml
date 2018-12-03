@@ -128,5 +128,5 @@ let aggregate f a b =
   from (f ra.start rb.start) (f ra.stop rb.stop)
 
 let to_string = function
-| Unfiltered r -> string_of_int r.start ^ ":" ^ string_of_int r.stop)
-| Filtered r,_ -> "F:" ^ string_of_int r.start ^ ":" ^ string_of_int r.stop)
+| Unfiltered r -> string_of_int r.start ^ ":" ^ string_of_int r.stop
+| Filtered (r,_) -> "F:" ^ string_of_int r.start ^ ":" ^ string_of_int r.stop
