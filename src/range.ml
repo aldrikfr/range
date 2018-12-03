@@ -108,9 +108,9 @@ let join a b =
   from (min ra.start rb.start) (max ra.stop rb.stop)
 
 let map f  = function
-  | Unfiltered {start; stop} -> Unfiltered {start= f start; stop= f stop}
-  | Filtered ({start; stop},f_filter) ->
-      from (f start) (f stop)
+  | Unfiltered r -> Unfiltered {start= f r.start; stop= f r.stop}
+  | Filtered (r,f_filter) ->
+      from (f r.start) (f r.stop)
       |> filter_on f_filter
 
 let aggregate f a b =
@@ -118,6 +118,8 @@ let aggregate f a b =
   let rb = get_range_record_from b in
   from (f ra.start rb.start) (f ra.stop rb.stop)
 
+let range_record_to_string r = string_of_int r.start ^ ":" ^ string_of_int r.stop
+
 let to_string = function
-| Unfiltered r -> string_of_int r.start ^ ":" ^ string_of_int r.stop
-| Filtered (r,_) -> "F:" ^ string_of_int r.start ^ ":" ^ string_of_int r.stop
+| Unfiltered r -> range_record_to_string r
+| Filtered (r,_) -> "F:" ^ (range_record_to_string r)
