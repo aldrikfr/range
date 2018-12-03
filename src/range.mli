@@ -9,7 +9,8 @@ the Free Software Foundation, either version 3 of the License, or
 (** Range module provide a type for handling the description of an integer
 sequence described by a start value and a stop value. This module provide
 functions to fold this range, and some basic set operation likes cross and
-join.
+    join.
+
 The main goal is to provide a split capacity in order to make life easy for
 distributed processing.
 
@@ -21,15 +22,25 @@ distributed processing.
 type t
 
 (** from int_value -> int_value will create a t value representing the range
-described by the two values given in parameter.
-Usage from 2 3 and from 3 2 are equivalent
+    described by the two values given in parameter.
 
-@param start : int representating the starting value of the range
-@param stop : int representing the last value of the range
-@return range : t the corresponding range type value defined by start and stop
+    @param start Integer representating the starting value of the range
+    @param stop Integer representing the last value of the range
+    @return Range.t type which value defined by start and stop parameters
+
  *)
 val from : int -> int -> t
 
+(** filter_on predicate function
+    attach a predicate that will modify the behaviour of iter or fold funtions
+    in order to apply only to values that satisfies the predicate.
+
+    @param predicate the predicate is attached to the range value, the predicate
+    must respect the signature int -> bool/
+    @param Range.t value if the range provided has already a filter, the new
+    range value will merge the two filters.
+    @return new Range.t value with a new filter added.
+    **)
 val filter_on : (int -> bool) -> t -> t
 
 val fold : ('a -> int -> 'a) -> 'a -> t -> 'a
