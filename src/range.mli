@@ -43,6 +43,16 @@ val from : int -> int -> t
     **)
 val filter_on : (int -> bool) -> t -> t
 
+(** fold the equivalent of List.fold_left applied to integer range_record
+    explore all the values contained in the rang value applying f to the
+    accumulator and the current element read by fold. If a filter was associated
+    to the range value, only element validated by the predicate f will be passed
+    to the function.
+
+    @param f function aggregating the accumulator to the current value.
+    @param acc initial value of the accumulator
+    @param explored range value
+    @return value of the accumulator after reading all elements **)
 val fold : ('a -> int -> 'a) -> 'a -> t -> 'a
 
 val iter : (int -> unit) -> t -> unit
