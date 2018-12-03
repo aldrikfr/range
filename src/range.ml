@@ -27,6 +27,10 @@ let filter_on f = function
     let new_filter e = f_prev_filter e && f e in
     Filtered (r,new_filter)
 
+let remove_filter = function
+  | Unfiltered r -> Unfiltered r
+  | Filtered (r,_) -> Unfiltered r
+
 let rec fold_by_loop {start; stop} step f acc n =
   if n > stop then acc
   else if n = stop then f acc n

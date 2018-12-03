@@ -10,7 +10,9 @@ type t
 
 val from : int -> int -> t
 
-val filter_on : (int -> bool) -> t -> t 
+val filter_on : (int -> bool) -> t -> t
+
+val remove_filter : t -> t 
 
 val fold : ('a -> int -> 'a) -> 'a -> t -> 'a
 
