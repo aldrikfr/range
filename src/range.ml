@@ -19,59 +19,44 @@ let implode f p =
 let from start stop = Unfiltered {start= min start stop; stop= max start stop}
 
 let filter_on f = function
-  | Unfiltered r -> Filtered (r, f)
-  | Filtered (r, f_prev_filter) ->
-      let new_filter e = f_prev_filter e && f e in
-      Filtered (r, new_filter)
+  | Unfiltered r -> Filtered (r,f)
+  | Filtered (r,f_prev_filter) ->
+    let new_filter e = f_prev_filter e && f e in
+    Filtered (r,new_filter)
+
+let rec fold_by_loop {start; stop} step f acc n =
+  if n > stop then acc
+  else if n = stop then f acc n
+  else fold_by_loop {start; stop} step f (f acc n) (min stop (n + step))
 
 let fold_by step f acc = function
-  | Unfiltered {start; stop} ->
-      let rec loop acc n =
-        if n > stop then acc
-        else if n = stop then f acc n
-        else loop (f acc n) (min stop (n + step))
-      in
-      loop acc start
-  | Filtered ({start; stop}, f_filter) ->
-      let filter acc n = if f_filter n then f acc n else acc in
-      let rec loop acc n =
-        if n > stop then acc
-        else if n = stop then filter acc n
-        else loop (filter acc n) (min stop (n + step))
-      in
-      loop acc start
+  | Unfiltered r -> fold_by_loop r step f acc r.start
+  | Filtered (r,f_filter) ->
+    let f_with_filter acc n = if f_filter n then f acc n else acc in
+    fold_by_loop r step f_with_filter acc r.start
 
-let fold f acc = function
-  | Unfiltered {start; stop} ->
-      let rec loop acc n = if n > stop then acc else loop (f acc n) (succ n) in
-      loop acc start
-  | Filtered ({start; stop}, f_filter) ->
-      let rec loop acc n =
-        if n > stop then acc
-        else
-          let new_acc = if f_filter n then f acc n else acc in
-          loop new_acc (succ n)
-      in
-      loop acc start
+let rec fold_loop {start; stop} f acc n =
+  if n > stop
+    then acc
+    else fold_loop {start; stop} f (f acc n) (succ n)
+
+let fold f acc  = function
+| Unfiltered r -> fold_loop r f acc r.start
+| Filtered (r,f_filter) ->
+  let f_agg acc n = if f_filter n then f acc n else acc in
+  fold_loop r f_agg acc r.start
+
+let rec iter_loop {start; stop} f n =
+    if n > stop then ()
+    else (
+      f n ;
+      iter_loop {start; stop} f (succ n) )
 
 let iter f = function
-  | Unfiltered {start; stop} ->
-      let rec loop n =
-        if n > stop then ()
-        else (
-          f n ;
-          loop (succ n) )
-      in
-      loop start
-  | Filtered ({start; stop}, f_filter) ->
-      let rec loop n =
-        if n > stop then ()
-        else if f_filter n then (
-          f n ;
-          loop (succ n) )
-        else loop (succ n)
-      in
-      loop start
+| Unfiltered r -> iter_loop r f r.start
+| Filtered (r,f_filter) ->
+  let f_with_filter n = if f_filter n then f n else () in
+  iter_loop r f_with_filter r.start
 
 let length = implode (fun start stop -> stop - start)
 
@@ -106,17 +91,19 @@ let join a b =
   let rb = get_range_record_from b in
   from (min ra.start rb.start) (max ra.stop rb.stop)
 
-let map f = function
-  | Unfiltered {start; stop} -> Unfiltered {start= f start; stop= f stop}
-  | Filtered ({start; stop}, f_filter) ->
-      from (f start) (f stop) |> filter_on f_filter
+let map f  = function
+  | Unfiltered r -> Unfiltered {start= f r.start; stop= f r.stop}
+  | Filtered (r,f_filter) ->
+      from (f r.start) (f r.stop)
+      |> filter_on f_filter
 
 let aggregate f a b =
   let ra = get_range_record_from a in
   let rb = get_range_record_from b in
   from (f ra.start rb.start) (f ra.stop rb.stop)
 
+let range_record_to_string r = string_of_int r.start ^ ":" ^ string_of_int r.stop
+
 let to_string = function
-  | Unfiltered r -> string_of_int r.start ^ ":" ^ string_of_int r.stop
-  | Filtered (r, _) ->
-      "F:" ^ string_of_int r.start ^ ":" ^ string_of_int r.stop
+| Unfiltered r -> range_record_to_string r
+| Filtered (r,_) -> "F:" ^ (range_record_to_string r)
