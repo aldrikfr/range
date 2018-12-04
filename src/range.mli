@@ -104,16 +104,35 @@ val split : int -> int -> t -> t list
 
     @param element to be tested
     @param reference range value
-    @result true if element is contained in reference 
-   **)
+    @result true if element is contained in reference
+    **)
 val contain : int -> t -> bool
 
+(** new Range.t value representing the common value between two Range.t values.
+
+    @param a Range.t value
+    @param b Range.t value
+    @return Result type with a Range.t value defined by the common values, and
+    Error string message if it is impossible to find common values.
+    **)
 val cross : t -> t -> (t, string) result
 
+(** Same as cross function with exception for error handling.
+   **)
 val cross_exn : t -> t -> t
 
+(** Join to generate a new Range.t value contained both a and b
+
+    @param a Range.t value
+    @param b Range.t value
+    @return Result type with a Range.t value containing both a and b.
+    If a and b are disjoint, they can't be joinded so an Error string message
+    is returned.
+   **)
 val join : t -> t -> (t, string) result
 
+(** Same as join with exception for error handling
+   **)
 val join_exn : t -> t -> t
 
 val map : (int -> int) -> t -> t
