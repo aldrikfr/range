@@ -43,6 +43,12 @@ val from : int -> int -> t
     **)
 val filter_on : (int -> bool) -> t -> t
 
+val filtered_from : int -> int -> (int -> bool) -> t
+
+val remove_filter : t -> t
+
+val is_filtered : t -> bool
+
 (** fold the equivalent of List.fold_left applied to integer range_record
     explore all the values contained in the rang value applying f to the
     accumulator and the current element read by fold. If a filter was associated
@@ -66,7 +72,7 @@ val iter : (int -> unit) -> t -> unit
 
 (** split a range value into a list of smaller range, useful for batching in
     parallel processing.
-    
+
     @param minimal size of a range
     @param count number of subranges contained in the list.
     @param range value to split
@@ -77,9 +83,13 @@ val split : int -> int -> t -> t list
 
 val contain : int -> t -> bool
 
-val cross : t -> t -> t
+val cross : t -> t -> (t, string) result
 
-val join : t -> t -> t
+val cross_exn : t -> t -> t
+
+val join : t -> t -> (t, string) result
+
+val join_exn : t -> t -> t
 
 val map : (int -> int) -> t -> t
 
