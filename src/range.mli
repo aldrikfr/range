@@ -49,14 +49,14 @@ val filter_on : (int -> bool) -> t -> t
     @param stop Integer representing the last value of the range
     @param predicate the predicate is attached to the range value, the predicate
     must respect the signature int -> bool
-    @return Range.t type which value defined by start and stop parameters
+    @return new Range.t type which value defined by start and stop parameters
     **)
 val filtered_from : int -> int -> (int -> bool) -> t
 
 (** remove filter from a range.
 
-    @param Range.t value
-    @return Range.t value from parameter without a filter.
+    @param old Range.t value
+    @return new Range.t value from parameter without a filter.
    **)
 val remove_filter : t -> t
 
@@ -64,7 +64,7 @@ val remove_filter : t -> t
 
     test if a Range.t value contain a filter or not.
     @param Range.t value to test
-    @return true if there is a filter false otherwise
+    @return test true if there is a filter false otherwise
    **)
 val is_filtered : t -> bool
 
@@ -76,7 +76,7 @@ val is_filtered : t -> bool
 
     @param f function aggregating the accumulator to the current value.
     @param acc initial value of the accumulator
-    @param explored range value
+    @param range explored range value
     @return value of the accumulator after reading all elements **)
 val fold : ('a -> int -> 'a) -> 'a -> t -> 'a
 
@@ -100,6 +100,12 @@ val iter : (int -> unit) -> t -> unit
     **)
 val split : int -> int -> t -> t list
 
+(** contain function to test if an integer value is contained in a Range.t values
+
+    @param element to be tested
+    @param reference range value
+    @result true if element is contained in reference 
+   **)
 val contain : int -> t -> bool
 
 val cross : t -> t -> (t, string) result
