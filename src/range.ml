@@ -12,6 +12,9 @@ type t =
   | Unfiltered of range_record
   | Filtered of range_record * ( int -> bool )
 
+let no_common_area_msg = "There is no common area between the two ranges."
+
+
 let implode f p =
   let r =
     match p with
@@ -26,6 +29,14 @@ let filter_on f = function
   | Filtered (r,f_prev_filter) ->
     let new_filter e = f_prev_filter e && f e in
     Filtered (r,new_filter)
+
+let filtered_from start stop f_filter =
+  from start stop
+  |> filter_on f_filter
+
+let is_filtered = function
+  | Unfiltered _ -> false
+  | Filtered _ -> true 
 
 let remove_filter = function
   | Unfiltered r -> Unfiltered r
@@ -97,12 +108,14 @@ let get_range_record_from = function
 let cross a b =
   let ra = get_range_record_from a in
   let rb = get_range_record_from b in
-  from (max ra.start rb.start) (min ra.stop rb.stop)
+  if ra.stop < rb.start || rb.stop < ra.start then Error(no_common_area_msg)
+  else Ok (from (max ra.start rb.start) (min ra.stop rb.stop))
 
 let join a b =
   let ra = get_range_record_from a in
   let rb = get_range_record_from b in
-  from (min ra.start rb.start) (max ra.stop rb.stop)
+  if ra.stop < rb.start || rb.stop < ra.start then Error(no_common_area_msg)
+  else  Ok (from (min ra.start rb.start) (max ra.stop rb.stop) )
 
 let map f  = function
   | Unfiltered r -> Unfiltered {start= f r.start; stop= f r.stop}

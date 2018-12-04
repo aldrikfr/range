@@ -12,7 +12,11 @@ val from : int -> int -> t
 
 val filter_on : (int -> bool) -> t -> t
 
-val remove_filter : t -> t 
+val filtered_from : int -> int -> (int -> bool) -> t
+
+val remove_filter : t -> t
+
+val is_filtered : t -> bool
 
 val fold : ('a -> int -> 'a) -> 'a -> t -> 'a
 
@@ -22,9 +26,9 @@ val split : int -> int -> t -> t list
 
 val contain : int -> t -> bool
 
-val cross : t -> t -> t
+val cross : t -> t -> (t, string) result
 
-val join : t -> t -> t
+val join : t -> t -> (t, string) result
 
 val map : (int -> int) -> t -> t
 

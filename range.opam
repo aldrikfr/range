@@ -20,6 +20,6 @@ url {
    "md5=39ac4481f84382592d5b5ce426186244"
  }
 depends: [
-"ocaml" {>= "4.01.0"}
+"ocaml" {>= "4.03.0"}
 "dune" {build}]
 build: ["dune" "build" "-p" name "-j" jobs]
