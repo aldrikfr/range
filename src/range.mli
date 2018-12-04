@@ -135,7 +135,16 @@ val join : t -> t -> (t, string) result
    **)
 val join_exn : t -> t -> t
 
+(** apply f to limits value of Range.t value
+
+    This feature is in DEVELOPMENT and is INSTABLE
+
+    @param f function to apply to the limits of a range value
+    @param r range to modify
+    @return updated range
+   **)
 val map : (int -> int) -> t -> t
+
 
 val aggregate : (int -> int -> int) -> t -> t -> t
 
