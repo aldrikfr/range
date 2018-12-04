@@ -107,6 +107,8 @@ let join a b =
   if ra.stop < rb.start || rb.stop < ra.start then Error no_common_area_msg
   else Ok (from (min ra.start rb.start) (max ra.stop rb.stop))
 
+let join_exn a b = join a b |> handle_result_with_exception
+
 let map f = function
   | Unfiltered r -> Unfiltered {start= f r.start; stop= f r.stop}
   | Filtered (r, f_filter) -> from (f r.start) (f r.stop) |> filter_on f_filter
