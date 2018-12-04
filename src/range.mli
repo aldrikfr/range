@@ -36,17 +36,36 @@ val from : int -> int -> t
     in order to apply only to values that satisfies the predicate.
 
     @param predicate the predicate is attached to the range value, the predicate
-    must respect the signature int -> bool/
+    must respect the signature int -> bool
     @param Range.t value if the range provided has already a filter, the new
     range value will merge the two filters.
     @return new Range.t value with a new filter added.
     **)
 val filter_on : (int -> bool) -> t -> t
 
+(** create a new range of integer with a filters
+
+    @param start Integer representating the starting value of the range
+    @param stop Integer representing the last value of the range
+    @param predicate the predicate is attached to the range value, the predicate
+    must respect the signature int -> bool
+    @return Range.t type which value defined by start and stop parameters
+    **)
 val filtered_from : int -> int -> (int -> bool) -> t
 
+(** remove filter from a range.
+
+    @param Range.t value
+    @return Range.t value from parameter without a filter.
+   **)
 val remove_filter : t -> t
 
+(** is filtered predicate
+
+    test if a Range.t value contain a filter or not.
+    @param Range.t value to test
+    @return true if there is a filter false otherwise
+   **)
 val is_filtered : t -> bool
 
 (** fold the equivalent of List.fold_left applied to integer range_record
