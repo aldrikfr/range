@@ -28,6 +28,8 @@ val contain : int -> t -> bool
 
 val cross : t -> t -> (t, string) result
 
+val cross_exn : t -> t -> t 
+
 val join : t -> t -> (t, string) result
 
 val map : (int -> int) -> t -> t

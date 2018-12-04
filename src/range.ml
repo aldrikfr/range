@@ -89,11 +89,17 @@ let contain e = function
 
 let get_range_record_from = function Filtered (r, _) -> r | Unfiltered r -> r
 
+let handle_result_with_exception = function
+  | Ok r -> r
+  | Error m -> failwith m
+
 let cross a b =
   let ra = get_range_record_from a in
   let rb = get_range_record_from b in
   if ra.stop < rb.start || rb.stop < ra.start then Error no_common_area_msg
   else Ok (from (max ra.start rb.start) (min ra.stop rb.stop))
+
+let cross_exn a b = cross a b |> handle_result_with_exception
 
 let join a b =
   let ra = get_range_record_from a in
