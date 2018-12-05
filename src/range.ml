@@ -12,7 +12,7 @@ type range_modification = Filter of (int -> bool)
 *)
 type t =
   | Natural of range_record
-  | Modified of range_record * (int -> bool)
+  | Modified of range_record * (int option -> int option)
 
 let no_common_area_msg = "There is no common area between the two ranges."
     (*
@@ -26,10 +26,21 @@ let implode f p =
 let from start stop = Natural {start= min start stop; stop= max start stop}
 
 let filter_on f = function
-  | Natural r -> Modified (r, f)
-  | Modified (r, f_prev_filter) ->
-      let new_filter e = f_prev_filter e && f e in
-      Modified (r, new_filter)
+  | Natural r ->
+      let modifier = function
+        | None -> None
+        | Some n -> if f n then Some n else None in
+      Modified (r,modifier)
+  | Modified (r, f_prev) ->
+      let modifier = function
+        | None -> None
+        | Some n ->
+          begin
+            match f_prev (Some n) with
+            | None -> None
+            | Some mn -> if f mn then Some mn else None
+          end in
+      Modified (r,modifier)
 
 let filtered_from start stop f_filter = from start stop |> filter_on f_filter
 
@@ -47,8 +58,11 @@ let rec fold_by_loop {start; stop} step f acc n =
 let fold_by step f acc = function
   | Natural r -> fold_by_loop r step f acc r.start
   | Modified (r, f_filter) ->
-      let f_with_filter acc n = if f_filter n then f acc n else acc in
-      fold_by_loop r step f_with_filter acc r.start
+    let f_with_filter acc n =
+      match f_filter (Some n) with
+      | Some mn -> f acc mn
+      | None -> acc in
+    fold_by_loop r step f_with_filter acc r.start
 
 let rec fold_loop {start; stop} f acc n =
   if n > stop then acc else fold_loop {start; stop} f (f acc n) (succ n)
@@ -56,8 +70,11 @@ let rec fold_loop {start; stop} f acc n =
 let fold f acc = function
   | Natural r -> fold_loop r f acc r.start
   | Modified (r, f_filter) ->
-      let f_agg acc n = if f_filter n then f acc n else acc in
-      fold_loop r f_agg acc r.start
+    let f_agg acc n =
+      match f_filter (Some n) with
+      | Some mn ->  f acc mn
+      | None -> acc in
+    fold_loop r f_agg acc r.start
 
 let rec iter_loop {start; stop} f n =
   if n > stop then ()
@@ -68,8 +85,11 @@ let rec iter_loop {start; stop} f n =
 let iter f = function
   | Natural r -> iter_loop r f r.start
   | Modified (r, f_filter) ->
-      let f_with_filter n = if f_filter n then f n else () in
-      iter_loop r f_with_filter r.start
+    let f_with_filter n =
+      match f_filter (Some n) with
+      | Some mn -> f mn
+      | None -> () in
+    iter_loop r f_with_filter r.start
 
 let length = implode (fun start stop -> stop - start)
 
@@ -90,7 +110,9 @@ let split minimal n r =
 
 let contain e = function
   | Natural r -> r.start <= e && e <= r.stop
-  | Modified (r, f_filter) -> f_filter e && r.start <= e && e <= r.stop
+  | Modified _ as data ->
+    fold (fun acc n -> if n = e then true else acc) false data
+
 
 let get_range_record_from = function Modified (r, _) -> r | Natural r -> r
 
@@ -115,8 +137,21 @@ let join a b =
 let join_exn a b = join a b |> handle_result_with_exception
 
 let map f = function
-  | Natural r -> Natural {start= f r.start; stop= f r.stop}
-  | Modified (r, f_filter) -> from (f r.start) (f r.stop) |> filter_on f_filter
+  | Natural r ->
+    let modifier = function
+      | Some n -> Some (f n)
+      | None -> None in
+    Modified (r,modifier)
+  | Modified (r, f_filter) ->
+    let modifier = function
+      | Some n ->
+        begin
+          match f_filter (Some n) with
+          | None -> None
+          | Some mn -> Some (f mn)
+        end
+      | None -> None in
+    Modified (r,modifier)
 
 let aggregate f a b =
   let ra = get_range_record_from a in
@@ -128,4 +163,4 @@ let range_record_to_string r =
 
 let to_string = function
   | Natural r -> range_record_to_string r
-  | Modified (r, _) -> "F:" ^ range_record_to_string r
+  | Modified (r, _) -> "M:" ^ range_record_to_string r
