@@ -53,12 +53,12 @@ val filter_on : (int -> bool) -> t -> t
     **)
 val filtered_from : int -> int -> (int -> bool) -> t
 
-(** remove filter from a range.
+(** remove all map and filter effects from a range.
 
     @param old Range.t value
-    @return new Range.t value from parameter without a filter.
+    @return new Range.t value from parameter without modifiers.
    **)
-val remove_filter : t -> t
+val reset : t -> t
 
 (** is filtered predicate
 

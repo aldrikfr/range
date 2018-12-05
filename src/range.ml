@@ -15,10 +15,7 @@ type t =
   | Modified of range_record * (int option -> int option)
 
 let no_common_area_msg = "There is no common area between the two ranges."
-    (*
-let apply_modifications f e =
-  if f e then Some e else None
-*)
+
 let implode f p =
   let r = match p with Natural r -> r | Modified (r, _) -> r in
   f r.start r.stop
@@ -46,7 +43,7 @@ let filtered_from start stop f_filter = from start stop |> filter_on f_filter
 
 let is_filtered = function Natural _ -> false | Modified _ -> true
 
-let remove_filter = function
+let reset = function
   | Natural r -> Natural r
   | Modified (r, _) -> Natural r
 
