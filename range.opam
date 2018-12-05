@@ -3,9 +3,9 @@ name : "range"
 version: "0.4"
 synopsis: "Fold on integer range"
 description: """
-Enable folding on integer range with split capacities
-for making distributed computing easier with libraries
-like functory
+Library to work on range of sequential integers with features like : split, map,
+filter capacities.
+Designed for making distributed computing easier with libraries like functory.
 """
 maintainer : "Aldrik KLEBER <contact@aldrik.net>"
 authors : "Aldrik KLEBER"
