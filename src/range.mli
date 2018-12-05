@@ -31,7 +31,7 @@ type t
  *)
 val from : int -> int -> t
 
-(** filter_on predicate function
+(** filter on predicate function
     attach a predicate that will modify the behaviour of iter or fold funtions
     in order to apply only to values that satisfies the predicate.
 
@@ -41,7 +41,7 @@ val from : int -> int -> t
     range value will merge the two filters.
     @return new Range.t value with a new filter added.
     **)
-val filter_on : (int -> bool) -> t -> t
+val filter : (int -> bool) -> t -> t
 
 (** create a new range of integer with a filters
 
@@ -53,12 +53,12 @@ val filter_on : (int -> bool) -> t -> t
     **)
 val filtered_from : int -> int -> (int -> bool) -> t
 
-(** remove filter from a range.
+(** remove all map and filter effects from a range.
 
     @param old Range.t value
-    @return new Range.t value from parameter without a filter.
+    @return new Range.t value from parameter without modifiers.
    **)
-val remove_filter : t -> t
+val reset : t -> t
 
 (** is filtered predicate
 
@@ -135,7 +135,16 @@ val join : t -> t -> (t, string) result
    **)
 val join_exn : t -> t -> t
 
+(** apply f to limits value of Range.t value
+
+    This feature is in DEVELOPMENT and is INSTABLE
+
+    @param f function to apply to the limits of a range value
+    @param r range to modify
+    @return updated range
+   **)
 val map : (int -> int) -> t -> t
+
 
 val aggregate : (int -> int -> int) -> t -> t -> t
 
