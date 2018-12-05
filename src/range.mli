@@ -31,7 +31,7 @@ type t
  *)
 val from : int -> int -> t
 
-(** filter_on predicate function
+(** filter on predicate function
     attach a predicate that will modify the behaviour of iter or fold funtions
     in order to apply only to values that satisfies the predicate.
 
@@ -41,7 +41,7 @@ val from : int -> int -> t
     range value will merge the two filters.
     @return new Range.t value with a new filter added.
     **)
-val filter_on : (int -> bool) -> t -> t
+val filter : (int -> bool) -> t -> t
 
 (** create a new range of integer with a filters
 

@@ -22,7 +22,7 @@ let implode f p =
 
 let from start stop = Natural {start= min start stop; stop= max start stop}
 
-let filter_on f = function
+let filter f = function
   | Natural r ->
       let modifier = function
         | None -> None
@@ -39,7 +39,7 @@ let filter_on f = function
           end in
       Modified (r,modifier)
 
-let filtered_from start stop f_filter = from start stop |> filter_on f_filter
+let filtered_from start stop f_filter = from start stop |> filter f_filter
 
 let is_filtered = function Natural _ -> false | Modified _ -> true
 
