@@ -8,9 +8,6 @@ the Free Software Foundation, either version 3 of the License, or
 
 type range_record = {start: int; stop: int}
 
-(*
-type range_modification = Filter of (int -> bool)
-*)
 type t =
   | Natural of range_record
   | Modified of range_record * (int option -> int option)
