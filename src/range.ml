@@ -22,22 +22,20 @@ let implode f p =
 
 let from start stop = Natural {start= min start stop; stop= max start stop}
 
+let bind f = function
+  | None -> None
+  | Some n -> f n
+
 let filter f = function
   | Natural r ->
-      let modifier = function
-        | None -> None
-        | Some n -> if f n then Some n else None in
-      Modified (r,modifier)
+    let modifier = bind (fun n -> if f n then Some n else None) in
+    Modified (r,modifier)
   | Modified (r, f_prev) ->
-      let modifier = function
-        | None -> None
-        | Some n ->
-          begin
-            match f_prev (Some n) with
-            | None -> None
-            | Some mn -> if f mn then Some mn else None
-          end in
-      Modified (r,modifier)
+    let modifier x =
+      x
+      |> f_prev
+      |> bind (fun n -> if f n then Some n else None) in
+    Modified (r,modifier)
 
 let filtered_from start stop f_filter = from start stop |> filter f_filter
 
@@ -135,19 +133,13 @@ let join_exn a b = join a b |> handle_result_with_exception
 
 let map f = function
   | Natural r ->
-    let modifier = function
-      | Some n -> Some (f n)
-      | None -> None in
+    let modifier = bind (fun n -> Some (f n)) in
     Modified (r,modifier)
   | Modified (r, f_filter) ->
-    let modifier = function
-      | Some n ->
-        begin
-          match f_filter (Some n) with
-          | None -> None
-          | Some mn -> Some (f mn)
-        end
-      | None -> None in
+    let modifier mn =
+      mn
+      |> f_filter
+      |> bind (fun n -> Some (f n)) in
     Modified (r,modifier)
 
 let aggregate f a b =
