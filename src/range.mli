@@ -60,10 +60,10 @@ val reset : t -> t
     @return new Range.t value from parameter without modifiers.
    **)
 
-val is_filtered : t -> bool
+val is_natural : t -> bool
 (** is filtered predicate
 
-    test if a Range.t value contain a filter or not.
+    test if a Range.t value contain a filter or map function transforming data.
     @param Range.t value to test
     @return test true if there is a filter false otherwise
    **)

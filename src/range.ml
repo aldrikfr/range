@@ -37,7 +37,7 @@ let filter f = function
 
 let filtered_from start stop f_filter = from start stop |> filter f_filter
 
-let is_filtered = function Natural _ -> false | Modified _ -> true
+let is_natural = function Natural _ -> true | Modified _ -> false
 
 let reset = function Natural r -> Natural r | Modified (r, _) -> Natural r
 
