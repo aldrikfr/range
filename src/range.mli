@@ -44,7 +44,9 @@ val filter : (int -> bool) -> t -> t
     **)
 
 val filtered_from : int -> int -> (int -> bool) -> t
-(** create a new range of integer with a filters
+(** create a new range of integer with a filter
+
+    Application of f is delayed. Filters and map functions can be stacked.
 
     @param start Integer representating the starting value of the range
     @param stop Integer representing the last value of the range
@@ -105,7 +107,7 @@ val contain : int -> t -> bool
 
     @param element to be tested
     @param reference range value
-    @result true if element is contained in reference
+    @return true if element is contained in reference
     **)
 
 val cross : t -> t -> (t, string) result
@@ -136,15 +138,31 @@ val join_exn : t -> t -> t
    **)
 
 val map : (int -> int) -> t -> t
-(** apply f to limits value of Range.t value
+(** apply f to elements contained in a Range.t value
 
-    This feature is in DEVELOPMENT and is INSTABLE
+    This feature used a delayed application of f. Like for filters, f is stacked
+    on previous filter or map functions.
 
-    @param f function to apply to the limits of a range value
+    @param f function to apply to the content of a range value
     @param r range to modify
     @return updated range
    **)
 
+(** agregate the limits of a range through a function.
+
+    @param f function to aggregate an integer
+    @param a range a to be aggregated to b
+    @param b range b aggregated to a
+    @return a new range
+   **)
 val aggregate : (int -> int -> int) -> t -> t -> t
 
+(** export limits of a range to a string.
+
+    The presence of functions that can modifiy the content is signaled by "M:"
+    prefix
+
+    @param r Range.t value to export in a string .
+    @return string representing the content of r Range.t value.
+   **)
 val to_string : t -> string
