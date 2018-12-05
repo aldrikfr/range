@@ -15,9 +15,9 @@ dev-repo: "git+https://github.com/aldrikfr/range"
 bug-reports :"https://github.com/aldrikfr/range/issues"
 url {
    src:
-     "https://github.com/aldrikfr/range/archive/0.3.zip"
+     "https://github.com/aldrikfr/range/archive/0.4.tar.gz"
    checksum:
-   "md5=39ac4481f84382592d5b5ce426186244"
+   "md5=5bf6414b906ea8be72efe2990dd7b13c"
  }
 depends: [
 "ocaml" {>= "4.03.0"}
