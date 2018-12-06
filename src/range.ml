@@ -27,9 +27,9 @@ let filter f = function
       let modifier n = if f n then Some n else None in
       Modified (r, modifier)
   | Modified (r, f_prev) ->
-      let modifier x =
-        Option.(x |> f_prev >>= fun n -> if f n then Some n else None)
-      in
+    let modifier x =
+      let open Option in
+      x |> f_prev >>= (fun n -> some_if (f n) n) in
       Modified (r, modifier)
 
 let is_natural = function Natural _ -> true | Modified _ -> false
