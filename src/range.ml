@@ -44,10 +44,9 @@ let rec fold_by_loop {start; stop} step f acc n =
 let fold_by step f acc = function
   | Natural r -> fold_by_loop r step f acc r.start
   | Modified (r, f_filter) ->
-      let f_with_filter acc n =
-        match f_filter n with Some mn -> f acc mn | None -> acc
-      in
-      fold_by_loop r step f_with_filter acc r.start
+    let f_with_filter acc n =
+      n |> f_filter |> Option.value_map ~default:acc ~f:(f acc) in
+  fold_by_loop r step f_with_filter acc r.start
 
 let rec fold_loop {start; stop} f acc n =
   if n > stop then acc else fold_loop {start; stop} f (f acc n) (Int.succ n)
@@ -55,10 +54,9 @@ let rec fold_loop {start; stop} f acc n =
 let fold f acc = function
   | Natural r -> fold_loop r f acc r.start
   | Modified (r, f_filter) ->
-      let f_agg acc n =
-        match f_filter n with Some mn -> f acc mn | None -> acc
-      in
-      fold_loop r f_agg acc r.start
+    let f_agg acc n =
+      n |> f_filter |> Option.value_map ~default:acc ~f:(f acc) in
+    fold_loop r f_agg acc r.start
 
 let rec iter_loop {start; stop} f n =
   if n > stop then ()
@@ -69,10 +67,9 @@ let rec iter_loop {start; stop} f n =
 let iter f = function
   | Natural r -> iter_loop r f r.start
   | Modified (r, f_filter) ->
-      let f_with_filter n =
-        match f_filter n with Some mn -> f mn | None -> ()
-      in
-      iter_loop r f_with_filter r.start
+    let f_with_filter n =
+      n |> f_filter |> Option.value_map ~default:() ~f in
+    iter_loop r f_with_filter r.start
 
 let length = implode (fun start stop -> stop - start)
 
@@ -89,7 +86,7 @@ let split minimal n r =
       | Some (next_start, result) -> Some (Int.succ n, from next_start n :: result)
       | None -> Some (n, [])
     in
-    r |> fold_by packet_size f None |> function None -> [] | Some (_, l) -> l
+    r |> fold_by packet_size f None |> Option.value_map ~default:[] ~f:snd
 
 let contain e = function
   | Natural r -> r.start <= e && e <= r.stop
@@ -121,7 +118,7 @@ let map f = function
       let modifier n = Some (f n) in
       Modified (r, modifier)
   | Modified (r, f_filter) ->
-    let modifier mn = Option.(mn |> f_filter >>= (fun n -> Some (f n))) in
+    let modifier n = Option.(n |> f_filter >>= (fun n -> Some (f n))) in
       Modified (r, modifier)
 
 let range_record_to_string r =
