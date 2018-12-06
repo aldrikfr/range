@@ -10,7 +10,7 @@ type range_record = {start: int; stop: int}
 
 type t =
   | Natural of range_record
-  | Modified of range_record * (int option -> int option)
+  | Modified of range_record * (int -> int option)
 
 let no_common_area_msg = "There is no common area between the two ranges."
 
@@ -24,7 +24,7 @@ let bind f = function None -> None | Some n -> f n
 
 let filter f = function
   | Natural r ->
-      let modifier = bind (fun n -> if f n then Some n else None) in
+      let modifier = fun n -> if f n then Some n else None in
       Modified (r, modifier)
   | Modified (r, f_prev) ->
       let modifier x =
@@ -47,7 +47,7 @@ let fold_by step f acc = function
   | Natural r -> fold_by_loop r step f acc r.start
   | Modified (r, f_filter) ->
       let f_with_filter acc n =
-        match f_filter (Some n) with Some mn -> f acc mn | None -> acc
+        match f_filter n with Some mn -> f acc mn | None -> acc
       in
       fold_by_loop r step f_with_filter acc r.start
 
@@ -58,7 +58,7 @@ let fold f acc = function
   | Natural r -> fold_loop r f acc r.start
   | Modified (r, f_filter) ->
       let f_agg acc n =
-        match f_filter (Some n) with Some mn -> f acc mn | None -> acc
+        match f_filter n with Some mn -> f acc mn | None -> acc
       in
       fold_loop r f_agg acc r.start
 
@@ -72,7 +72,7 @@ let iter f = function
   | Natural r -> iter_loop r f r.start
   | Modified (r, f_filter) ->
       let f_with_filter n =
-        match f_filter (Some n) with Some mn -> f mn | None -> ()
+        match f_filter n with Some mn -> f mn | None -> ()
       in
       iter_loop r f_with_filter r.start
 
@@ -120,7 +120,7 @@ let join_exn a b = join a b |> handle_result_with_exception
 
 let map f = function
   | Natural r ->
-      let modifier = bind (fun n -> Some (f n)) in
+      let modifier = fun n -> Some (f n) in
       Modified (r, modifier)
   | Modified (r, f_filter) ->
       let modifier mn = mn |> f_filter |> bind (fun n -> Some (f n)) in
