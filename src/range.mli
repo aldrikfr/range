@@ -8,21 +8,22 @@ the Free Software Foundation, either version 3 of the License, or
 
 (** Range module provide a type for handling the description of an integer
 sequence described by a start value and a stop value. This module provide
-functions to fold this range, and some basic set operation likes cross and
-    join.
+functions to fold, filter and map this range.
 
-The main goal is to provide a split capacity in order to make life easy for
-distributed processing.
+The main goal is to :
+    *   provide a split capacity in order to make life easy for
+    distributed processing.
+    *   avoid the use of list or lazy list when the only need is to sequence a
+    range of integer.
 
-@author Aldrik KLEBER
-
+@author Aldrik KLEBER <contact@aldrik.net>
 *)
 
 (** t type correspond to a integer range value *)
 type t
 
 val from : int -> int -> t
-(** from int_value -> int_value will create a t value representing the range
+(** from start_value stop_value : will create a t value representing the range
     described by the two values given in parameter.
 
     @param start Integer representating the starting value of the range
@@ -32,13 +33,13 @@ val from : int -> int -> t
  *)
 
 val filter : (int -> bool) -> t -> t
-(** filter on predicate function
-    attach a predicate that will modify the behaviour of iter or fold funtions
+(** filter f range : will create a new Range.t value using predicate function
+    f. This modifies the behaviour of iter or fold funtions
     in order to apply only to values that satisfies the predicate.
 
-    @param predicate the predicate is attached to the range value, the predicate
+    @param f the predicate is attached to the range value, the predicate
     must respect the signature int -> bool
-    @param Range.t value if the range provided has already a filter, the new
+    @param range range to be filtered, if the range provided has already a filter, the new
     range value will merge the two filters.
     @return new Range.t value with a new filter added.
     **)
