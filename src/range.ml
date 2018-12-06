@@ -6,6 +6,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version. *)
 
+open Base
+
 type range_record = {start: int; stop: int}
 
 type t =
@@ -20,19 +22,15 @@ let implode f p =
 
 let from start stop = Natural {start= min start stop; stop= max start stop}
 
-let bind f = function None -> None | Some n -> f n
-
 let filter f = function
   | Natural r ->
-      let modifier = fun n -> if f n then Some n else None in
+      let modifier n = if f n then Some n else None in
       Modified (r, modifier)
   | Modified (r, f_prev) ->
       let modifier x =
-        x |> f_prev |> bind (fun n -> if f n then Some n else None)
+        Option.(x |> f_prev >>= fun n -> if f n then Some n else None)
       in
       Modified (r, modifier)
-
-let filtered_from start stop f_filter = from start stop |> filter f_filter
 
 let is_natural = function Natural _ -> true | Modified _ -> false
 
@@ -52,7 +50,7 @@ let fold_by step f acc = function
       fold_by_loop r step f_with_filter acc r.start
 
 let rec fold_loop {start; stop} f acc n =
-  if n > stop then acc else fold_loop {start; stop} f (f acc n) (succ n)
+  if n > stop then acc else fold_loop {start; stop} f (f acc n) (Int.succ n)
 
 let fold f acc = function
   | Natural r -> fold_loop r f acc r.start
@@ -66,7 +64,7 @@ let rec iter_loop {start; stop} f n =
   if n > stop then ()
   else (
     f n ;
-    iter_loop {start; stop} f (succ n) )
+    iter_loop {start; stop} f (Int.succ n) )
 
 let iter f = function
   | Natural r -> iter_loop r f r.start
@@ -82,13 +80,13 @@ let split minimal n r =
   let range_big_enough minimal n size = n >= minimal && size > minimal in
   let diff = length r in
   let packet_size =
-    float_of_int diff /. float_of_int n |> ceil |> int_of_float
+    Float.of_int diff /. Float.of_int n |> Float.round_up |> Int.of_float
   in
-  if range_big_enough minimal packet_size diff = false then [r]
+  if not (range_big_enough minimal packet_size diff) then [r]
   else
     let f acc n =
       match acc with
-      | Some (next_start, result) -> Some (succ n, from next_start n :: result)
+      | Some (next_start, result) -> Some (Int.succ n, from next_start n :: result)
       | None -> Some (n, [])
     in
     r |> fold_by packet_size f None |> function None -> [] | Some (_, l) -> l
@@ -120,19 +118,14 @@ let join_exn a b = join a b |> handle_result_with_exception
 
 let map f = function
   | Natural r ->
-      let modifier = fun n -> Some (f n) in
+      let modifier n = Some (f n) in
       Modified (r, modifier)
   | Modified (r, f_filter) ->
-      let modifier mn = mn |> f_filter |> bind (fun n -> Some (f n)) in
+    let modifier mn = Option.(mn |> f_filter >>= (fun n -> Some (f n))) in
       Modified (r, modifier)
 
-let aggregate f a b =
-  let ra = get_range_record_from a in
-  let rb = get_range_record_from b in
-  from (f ra.start rb.start) (f ra.stop rb.stop)
-
 let range_record_to_string r =
-  string_of_int r.start ^ ":" ^ string_of_int r.stop
+  Int.to_string r.start ^ ":" ^ Int.to_string r.stop
 
 let to_string = function
   | Natural r -> range_record_to_string r

@@ -19,8 +19,8 @@ The main goal is to :
 @author Aldrik KLEBER <contact@aldrik.net>
 *)
 
-(** t type correspond to a integer range value *)
 type t
+(** t type correspond to a integer range value *)
 
 val from : int -> int -> t
 (** from start_value stop_value : will create a t value representing the range
@@ -42,18 +42,6 @@ val filter : (int -> bool) -> t -> t
     @param range range to be filtered, if the range provided has already a filter, the new
     range value will merge the two filters.
     @return new Range.t value with a new filter added.
-    **)
-
-val filtered_from : int -> int -> (int -> bool) -> t
-(** create a new range of integer with a filter
-
-    Application of f is delayed. Filters and map functions can be stacked.
-
-    @param start Integer representating the starting value of the range
-    @param stop Integer representing the last value of the range
-    @param predicate the predicate is attached to the range value, the predicate
-    must respect the signature int -> bool
-    @return new Range.t type which value defined by start and stop parameters
     **)
 
 val reset : t -> t
@@ -149,15 +137,7 @@ val map : (int -> int) -> t -> t
     @return updated range
    **)
 
-(** agregate the limits of a range through a function.
-
-    @param f function to aggregate an integer
-    @param a range a to be aggregated to b
-    @param b range b aggregated to a
-    @return a new range
-   **)
-val aggregate : (int -> int -> int) -> t -> t -> t
-
+val to_string : t -> string
 (** export limits of a range to a string.
 
     The presence of functions that can modifiy the content is signaled by "M:"
@@ -166,4 +146,3 @@ val aggregate : (int -> int -> int) -> t -> t -> t
     @param r Range.t value to export in a string .
     @return string representing the content of r Range.t value.
    **)
-val to_string : t -> string

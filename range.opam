@@ -21,5 +21,6 @@ url {
  }
 depends: [
 "ocaml" {>= "4.03.0"}
+"base"
 "dune" {build}]
 build: ["dune" "build" "-p" name "-j" jobs]
