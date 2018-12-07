@@ -125,5 +125,5 @@ let range_record_to_string r =
   Int.to_string r.start ^ ":" ^ Int.to_string r.stop
 
 let to_string = function
-  | Natural r -> range_record_to_string r
+  | Natural r -> "N:" ^ range_record_to_string r
   | Modified (r, _) -> "M:" ^ range_record_to_string r
