@@ -75,11 +75,8 @@ let length = implode (fun start stop -> stop - start)
 let split minimal n r =
   let range_big_enough minimal n size = n >= minimal && size > minimal in
   let diff = length r in
-  let packet_size =
-    let open Float in
-    of_int diff / of_int n |> round_up |> Int.of_float
-  in
-  if not (range_big_enough minimal packet_size diff) then [r]
+  let pack_size = Float.(of_int diff / of_int n |> round_up |> Int.of_float) in
+  if not (range_big_enough minimal pack_size diff) then [r]
   else
     let f acc n =
       match acc with
@@ -111,7 +108,7 @@ let join = gen_agg min max
 let join_exn = agg_exn join
 
 let map f = function
-  | Natural r -> Modified (r, (fun n -> Some (f n)))
+  | Natural r -> Modified (r, fun n -> Some (f n))
   | Modified (r, f_filter) ->
       let new_f n = Option.(n |> f_filter >>= fun n -> f n |> some) in
       Modified (r, new_f)
