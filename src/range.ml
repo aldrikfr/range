@@ -99,19 +99,20 @@ let contain e = function
 
 let pair_map f (a, b) = (f a, f b)
 
-let cross a b =
+let agg_exn f a b = Option.value_exn ~message:no_common_area_msg (f a b)
+
+let gen_agg flow fhigh a b =
   let ra, rb = pair_map get_range_record_from (a, b) in
   if ra.stop < rb.start || rb.stop < ra.start then None
-  else Some (from (max ra.start rb.start) (min ra.stop rb.stop))
+  else Some (from (flow ra.start rb.start) (fhigh ra.stop rb.stop))
 
-let cross_exn a b = Option.value_exn ~message:no_common_area_msg (cross a b)
+let cross = gen_agg max min
 
-let join a b =
-  let ra, rb = pair_map get_range_record_from (a, b) in
-  if ra.stop < rb.start || rb.stop < ra.start then None
-  else Some (from (min ra.start rb.start) (max ra.stop rb.stop))
+let cross_exn = agg_exn cross
 
-let join_exn a b = Option.value_exn ~message:no_common_area_msg (join a b)
+let join = gen_agg min max
+
+let join_exn = agg_exn join
 
 let map f = function
   | Natural r ->
@@ -121,8 +122,7 @@ let map f = function
       let modifier n = Option.(n |> f_filter >>= fun n -> f n |> some) in
       Modified (r, modifier)
 
-let range_record_to_string r =
-  Int.(to_string r.start ^ ":" ^ to_string r.stop)
+let range_record_to_string r = Int.(to_string r.start ^ ":" ^ to_string r.stop)
 
 let to_string = function
   | Natural r -> "N:" ^ range_record_to_string r
