@@ -16,8 +16,10 @@ type t =
 
 let no_common_area_msg = "There is no common area between the two ranges."
 
+let get_range_record_from = function Modified (r, _) -> r | Natural r -> r
+
 let implode f p =
-  let r = match p with Natural r -> r | Modified (r, _) -> r in
+  let r = get_range_record_from p in
   f r.start r.stop
 
 let from start stop = Natural {start= min start stop; stop= max start stop}
@@ -92,9 +94,6 @@ let contain e = function
   | Natural r -> r.start <= e && e <= r.stop
   | Modified _ as data ->
       fold (fun acc n -> if n = e then true else acc) false data
-
-let get_range_record_from = function Modified (r, _) -> r | Natural r -> r
-
 let cross a b =
   let ra = get_range_record_from a in
   let rb = get_range_record_from b in
