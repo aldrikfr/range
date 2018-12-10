@@ -100,14 +100,14 @@ let contain e = function
 let pair_map f (a, b) = (f a, f b)
 
 let cross a b =
-  let ra, rb = get_range_record_from (a, b) in
+  let ra, rb = pair_map get_range_record_from (a, b) in
   if ra.stop < rb.start || rb.stop < ra.start then None
   else Some (from (max ra.start rb.start) (min ra.stop rb.stop))
 
 let cross_exn a b = Option.value_exn ~message:no_common_area_msg (cross a b)
 
 let join a b =
-  let ra, rb = get_range_record_from (a, b) in
+  let ra, rb = pair_map get_range_record_from (a, b) in
   if ra.stop < rb.start || rb.stop < ra.start then None
   else Some (from (min ra.start rb.start) (max ra.stop rb.stop))
 
