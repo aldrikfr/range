@@ -36,7 +36,7 @@ let filter f =
 
 let is_natural = function Natural _ -> true | Modified _ -> false
 
-let reset = function Natural r -> Natural r | Modified (r, _) -> Natural r
+let reset r = Natural (get_range_record_from r)
 
 let rec fold_by_loop {start; stop} step f acc n =
   if n > stop then acc
