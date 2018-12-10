@@ -58,11 +58,11 @@ let fold f acc = function
       in
       fold_loop r f_agg acc r.start
 
-let rec iter_loop {start; stop} f n =
-  if n > stop then ()
+let rec iter_loop r f n =
+  if n > r.stop then ()
   else (
     f n ;
-    iter_loop {start; stop} f (Int.succ n) )
+    iter_loop r f (Int.succ n) )
 
 let iter f = function
   | Natural r -> iter_loop r f r.start
