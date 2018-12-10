@@ -95,8 +95,7 @@ let split minimal n r =
 
 let contain e = function
   | Natural r -> r.start <= e && e <= r.stop
-  | Modified _ as data ->
-      fold (fun acc n -> if n = e then true else acc) false data
+  | Modified _ as data -> fold (fun acc n -> n = e || acc) false data
 
 let pair_map f (a, b) = (f a, f b)
 
