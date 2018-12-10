@@ -22,6 +22,8 @@ open Base
 type t
 (** t type correspond to a integer range value *)
 
+include Equal.S with type t := t
+
 val from : int -> int -> t
 (** from start_value stop_value : will create a t value representing the range
     described by the two values given in parameter.

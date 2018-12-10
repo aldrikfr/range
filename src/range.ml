@@ -58,6 +58,14 @@ let fold f acc = function
       in
       fold_loop r f_agg acc r.start
 
+let to_list r = fold (Fn.flip List.cons) [] r
+
+let equal a b =
+  match (a,b) with
+  | (Natural ra, Natural rb) -> ra.start = rb.start && ra.stop = rb.stop
+  | (Modified _, Modified _) -> List.equal (to_list a) (to_list b) ~equal:(=)
+  | _ -> false
+
 let rec iter_loop r f n =
   if n > r.stop then ()
   else (
