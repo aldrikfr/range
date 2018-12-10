@@ -104,8 +104,8 @@ val cross : t -> t -> t Option.t
 
     @param a Range.t value
     @param b Range.t value
-    @return Result type with a Range.t value defined by the common values, and
-    Error string message if it is impossible to find common values.
+    @return option value with Range.t option type value defined by the common
+    values, None if it is impossible to find common values.
     **)
 
 val cross_exn : t -> t -> t
@@ -117,9 +117,8 @@ val join : t -> t -> t Option.t
 
     @param a Range.t value
     @param b Range.t value
-    @return Result type with a Range.t value containing both a and b.
-    If a and b are disjoint, they can't be joinded so an Error string message
-    is returned.
+    @return Range.t option value containing both a and b.
+    If a and b are disjoint, they can't be joinded so None is returned .
    **)
 
 val join_exn : t -> t -> t
