@@ -114,7 +114,7 @@ let map f = function
       let modifier n = Some (f n) in
       Modified (r, modifier)
   | Modified (r, f_filter) ->
-    let modifier n = Option.(n |> f_filter >>= (fun n -> Some (f n))) in
+    let modifier n = Option.(n |> f_filter >>= (fun n -> f n |> some)) in
       Modified (r, modifier)
 
 let range_record_to_string r =
