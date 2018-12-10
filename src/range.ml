@@ -111,12 +111,10 @@ let join = gen_agg min max
 let join_exn = agg_exn join
 
 let map f = function
-  | Natural r ->
-      let modifier n = Some (f n) in
-      Modified (r, modifier)
+  | Natural r -> Modified (r, (fun n -> Some (f n)))
   | Modified (r, f_filter) ->
-      let modifier n = Option.(n |> f_filter >>= fun n -> f n |> some) in
-      Modified (r, modifier)
+      let new_f n = Option.(n |> f_filter >>= fun n -> f n |> some) in
+      Modified (r, new_f)
 
 let range_record_to_string r = Int.(to_string r.start ^ ":" ^ to_string r.stop)
 
