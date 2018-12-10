@@ -18,7 +18,7 @@ The main goal is to :
 
 @author Aldrik KLEBER <contact@aldrik.net>
 *)
-
+open Base
 type t
 (** t type correspond to a integer range value *)
 
