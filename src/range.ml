@@ -24,12 +24,12 @@ let implode f p =
 
 let from start stop = Natural {start= min start stop; stop= max start stop}
 
-let filter f = function
+let filter f = let open Option in function
   | Natural r ->
-    let modifier n = Option.(some_if (f n) n) in
+    let modifier n = some_if (f n) n in
     Modified (r, modifier)
   | Modified (r, f_prev) ->
-    let modifier x = Option.(x|>f_prev|> filter ~f) in
+    let modifier= Fn.compose (filter ~f) f_prev in
     Modified (r, modifier)
 
 let is_natural = function Natural _ -> true | Modified _ -> false
@@ -77,7 +77,8 @@ let split minimal n r =
   let range_big_enough minimal n size = n >= minimal && size > minimal in
   let diff = length r in
   let packet_size =
-    Float.of_int diff /. Float.of_int n |> Float.round_up |> Int.of_float
+    let open Float in
+    of_int diff / of_int n |> round_up |> Int.of_float
   in
   if not (range_big_enough minimal packet_size diff) then [r]
   else
