@@ -27,12 +27,8 @@ let from start stop = Natural {start= min start stop; stop= max start stop}
 let filter f =
   let open Option in
   function
-  | Natural r ->
-      let modifier n = some_if (f n) n in
-      Modified (r, modifier)
-  | Modified (r, f_prev) ->
-      let modifier = Fn.compose (filter ~f) f_prev in
-      Modified (r, modifier)
+  | Natural r -> Modified (r, fun n -> some_if (f n) n)
+  | Modified (r, f_prev) -> Modified (r, Fn.compose (filter ~f) f_prev)
 
 let is_natural = function Natural _ -> true | Modified _ -> false
 
