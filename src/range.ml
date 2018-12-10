@@ -122,7 +122,7 @@ let map f = function
       Modified (r, modifier)
 
 let range_record_to_string r =
-  Int.to_string r.start ^ ":" ^ Int.to_string r.stop
+  Int.(to_string r.start ^ ":" ^ to_string r.stop)
 
 let to_string = function
   | Natural r -> "N:" ^ range_record_to_string r
