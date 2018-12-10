@@ -98,18 +98,19 @@ let get_range_record_from = function Modified (r, _) -> r | Natural r -> r
 let cross a b =
   let ra = get_range_record_from a in
   let rb = get_range_record_from b in
-  if ra.stop < rb.start || rb.stop < ra.start then Error no_common_area_msg
-  else Ok (from (max ra.start rb.start) (min ra.stop rb.stop))
 
-let cross_exn a b = cross a b |> Result.ok_or_failwith
+  if ra.stop < rb.start || rb.stop < ra.start then None
+  else Some (from (max ra.start rb.start) (min ra.stop rb.stop))
+
+let cross_exn a b = Option.value_exn ~message:no_common_area_msg (cross a b)
 
 let join a b =
   let ra = get_range_record_from a in
   let rb = get_range_record_from b in
-  if ra.stop < rb.start || rb.stop < ra.start then Error no_common_area_msg
-  else Ok (from (min ra.start rb.start) (max ra.stop rb.stop))
+  if ra.stop < rb.start || rb.stop < ra.start then None
+  else Some (from (min ra.start rb.start) (max ra.stop rb.stop))
 
-let join_exn a b = join a b |> Result.ok_or_failwith
+let join_exn a b = Option.value_exn ~message:no_common_area_msg (join a b)
 
 let map f = function
   | Natural r ->
