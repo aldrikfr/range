@@ -99,7 +99,7 @@ val contain : int -> t -> bool
     @return true if element is contained in reference
     **)
 
-val cross : t -> t -> t option
+val cross : t -> t -> t Option.t
 (** new Range.t value representing the common value between two Range.t values.
 
     @param a Range.t value
@@ -112,7 +112,7 @@ val cross_exn : t -> t -> t
 (** Same as cross function with exception for error handling.
    **)
 
-val join : t -> t -> t option
+val join : t -> t -> t Option.t
 (** Join to generate a new Range.t value contained both a and b
 
     @param a Range.t value
