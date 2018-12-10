@@ -84,7 +84,7 @@ let split minimal n r =
           Some (Int.succ n, from next_start n :: result)
       | None -> Some (n, [])
     in
-    r |> fold_by packet_size f None |> Option.value_map ~default:[] ~f:snd
+    r |> fold_by pack_size f None |> Option.value_map ~default:[] ~f:snd
 
 let contain e = function
   | Natural r -> r.start <= e && e <= r.stop
