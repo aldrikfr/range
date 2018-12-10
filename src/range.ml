@@ -24,13 +24,15 @@ let implode f p =
 
 let from start stop = Natural {start= min start stop; stop= max start stop}
 
-let filter f = let open Option in function
+let filter f =
+  let open Option in
+  function
   | Natural r ->
-    let modifier n = some_if (f n) n in
-    Modified (r, modifier)
+      let modifier n = some_if (f n) n in
+      Modified (r, modifier)
   | Modified (r, f_prev) ->
-    let modifier= Fn.compose (filter ~f) f_prev in
-    Modified (r, modifier)
+      let modifier = Fn.compose (filter ~f) f_prev in
+      Modified (r, modifier)
 
 let is_natural = function Natural _ -> true | Modified _ -> false
 
@@ -44,9 +46,10 @@ let rec fold_by_loop {start; stop} step f acc n =
 let fold_by step f acc = function
   | Natural r -> fold_by_loop r step f acc r.start
   | Modified (r, f_filter) ->
-    let f_with_filter acc n =
-      n |> f_filter |> Option.value_map ~default:acc ~f:(f acc) in
-  fold_by_loop r step f_with_filter acc r.start
+      let f_with_filter acc n =
+        n |> f_filter |> Option.value_map ~default:acc ~f:(f acc)
+      in
+      fold_by_loop r step f_with_filter acc r.start
 
 let rec fold_loop {start; stop} f acc n =
   if n > stop then acc else fold_loop {start; stop} f (f acc n) (Int.succ n)
@@ -54,9 +57,10 @@ let rec fold_loop {start; stop} f acc n =
 let fold f acc = function
   | Natural r -> fold_loop r f acc r.start
   | Modified (r, f_filter) ->
-    let f_agg acc n =
-      n |> f_filter |> Option.value_map ~default:acc ~f:(f acc) in
-    fold_loop r f_agg acc r.start
+      let f_agg acc n =
+        n |> f_filter |> Option.value_map ~default:acc ~f:(f acc)
+      in
+      fold_loop r f_agg acc r.start
 
 let rec iter_loop {start; stop} f n =
   if n > stop then ()
@@ -67,9 +71,8 @@ let rec iter_loop {start; stop} f n =
 let iter f = function
   | Natural r -> iter_loop r f r.start
   | Modified (r, f_filter) ->
-    let f_with_filter n =
-      n |> f_filter |> Option.value_map ~default:() ~f in
-    iter_loop r f_with_filter r.start
+      let f_with_filter n = n |> f_filter |> Option.value_map ~default:() ~f in
+      iter_loop r f_with_filter r.start
 
 let length = implode (fun start stop -> stop - start)
 
@@ -84,7 +87,8 @@ let split minimal n r =
   else
     let f acc n =
       match acc with
-      | Some (next_start, result) -> Some (Int.succ n, from next_start n :: result)
+      | Some (next_start, result) ->
+          Some (Int.succ n, from next_start n :: result)
       | None -> Some (n, [])
     in
     r |> fold_by packet_size f None |> Option.value_map ~default:[] ~f:snd
@@ -93,10 +97,10 @@ let contain e = function
   | Natural r -> r.start <= e && e <= r.stop
   | Modified _ as data ->
       fold (fun acc n -> if n = e then true else acc) false data
+
 let cross a b =
   let ra = get_range_record_from a in
   let rb = get_range_record_from b in
-
   if ra.stop < rb.start || rb.stop < ra.start then None
   else Some (from (max ra.start rb.start) (min ra.stop rb.stop))
 
@@ -115,7 +119,7 @@ let map f = function
       let modifier n = Some (f n) in
       Modified (r, modifier)
   | Modified (r, f_filter) ->
-    let modifier n = Option.(n |> f_filter >>= (fun n -> f n |> some)) in
+      let modifier n = Option.(n |> f_filter >>= fun n -> f n |> some) in
       Modified (r, modifier)
 
 let range_record_to_string r =
