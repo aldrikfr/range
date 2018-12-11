@@ -58,7 +58,7 @@ let fold f acc = function
       in
       fold_loop r f_agg acc r.start
 
-let to_list r = fold (Fn.flip List.cons) [] r
+let to_list = fold (Fn.flip List.cons) []
 
 let equal a b =
   match (a,b) with
@@ -123,6 +123,8 @@ let map f = function
 
 let range_record_to_string r = Int.(to_string r.start ^ ":" ^ to_string r.stop)
 
+let export_string r prefix = Fn.flip (^) (range_record_to_string r) prefix
+
 let to_string = function
-  | Natural r -> "N:" ^ range_record_to_string r
-  | Modified (r, _) -> "M:" ^ range_record_to_string r
+  | Natural r -> export_string r "N:"
+  | Modified (r, _) -> export_string r "M:"
