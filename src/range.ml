@@ -14,6 +14,8 @@ type t =
   | Natural of range_record
   | Modified of range_record * (int -> int option)
 
+type elt = int
+
 let no_common_area_msg = "There is no common area between the two ranges."
 
 let get_range_record_from = function Modified (r, _) -> r | Natural r -> r

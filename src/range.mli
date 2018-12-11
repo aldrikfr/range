@@ -20,11 +20,12 @@ The main goal is to :
 *)
 open Base
 type t
+type elt=int
 (** t type correspond to a integer range value *)
 
 include Equal.S with type t := t
 
-val from : int -> int -> t
+val from : elt -> elt -> t
 (** from start_value stop_value : will create a t value representing the range
     described by the two values given in parameter.
 
@@ -34,7 +35,7 @@ val from : int -> int -> t
 
  *)
 
-val filter : (int -> bool) -> t -> t
+val filter : (elt -> bool) -> t -> t
 (** filter f range : will create a new Range.t value using predicate function
     f. This modifies the behaviour of iter or fold funtions
     in order to apply only to values that satisfies the predicate.
@@ -61,7 +62,7 @@ val is_natural : t -> bool
     @return test true if there is a filter false otherwise
    **)
 
-val fold : ('a -> int -> 'a) -> 'a -> t -> 'a
+val fold : ('a -> elt -> 'a) -> 'a -> t -> 'a
 (** fold the equivalent of List.fold_left applied to integer range_record
     explore all the values contained in the rang value applying f to the
     accumulator and the current element read by fold. If a filter was associated
@@ -73,7 +74,7 @@ val fold : ('a -> int -> 'a) -> 'a -> t -> 'a
     @param range explored range value
     @return value of the accumulator after reading all elements **)
 
-val iter : (int -> unit) -> t -> unit
+val iter : (elt -> unit) -> t -> unit
 (** iter apply a function with side effect on all values of the range. This
     function support filtering.
 
@@ -82,7 +83,7 @@ val iter : (int -> unit) -> t -> unit
     @return unit
    **)
 
-val split : int -> int -> t -> t list
+val split : elt -> elt -> t -> t list
 (** split a range value into a list of smaller range, useful for batching in
     parallel processing.
 
@@ -93,7 +94,7 @@ val split : int -> int -> t -> t list
     count elements max.
     **)
 
-val contain : int -> t -> bool
+val contain : elt -> t -> bool
 (** contain function to test if an integer value is contained in a Range.t values
 
     @param element to be tested
@@ -127,7 +128,7 @@ val join_exn : t -> t -> t
 (** Same as join with exception for error handling
    **)
 
-val map : (int -> int) -> t -> t
+val map : (elt -> elt) -> t -> t
 (** apply f to elements contained in a Range.t value
 
     This feature used a delayed application of f. Like for filters, f is stacked
