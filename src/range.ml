@@ -83,10 +83,10 @@ let iter f = function
 let length = implode (fun start stop -> stop - start)
 
 let split minimal n r =
-  let range_big_enough minimal n size = n >= minimal && size > minimal in
+  let big_enough minimal n size = n >= minimal && size > minimal in
   let diff = length r in
   let pack_size = Float.(of_int diff / of_int n |> round_up |> Int.of_float) in
-  if not (range_big_enough minimal pack_size diff) then [r]
+  if not (big_enough minimal pack_size diff) then [r]
   else
     let f acc n =
       match acc with
@@ -128,5 +128,5 @@ let range_record_to_string r = Int.(to_string r.start ^ ":" ^ to_string r.stop)
 let export_string r prefix = Fn.flip (^) (range_record_to_string r) prefix
 
 let to_string = function
-  | Natural r -> export_string r "N:"
-  | Modified (r, _) -> export_string r "M:"
+  | Natural r -> export_string r "Nat:"
+  | Modified (r, _) -> export_string r "Mod:"
