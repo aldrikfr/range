@@ -125,7 +125,7 @@ let map f = function
 
 let range_record_to_string r = Int.(to_string r.start ^ ":" ^ to_string r.stop)
 
-let export_string r prefix = Fn.flip (^) (range_record_to_string r) prefix
+let export_string r prefix = (^) prefix (range_record_to_string r) 
 
 let to_string = function
   | Natural r -> export_string r "Nat:"
