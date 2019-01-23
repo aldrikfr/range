@@ -143,7 +143,7 @@ val map : (elt -> elt) -> t -> t
 val to_string : t -> string
 (** export limits of a range to a string.
 
-    The presence of functions that can modifiy the content is signaled by "M:"
+    The presence of functions that can modifiy the content is signaled by "Mod:"
     prefix
 
     @param r Range.t value to export in a string .
