@@ -61,15 +61,16 @@ let fold f acc = function
 let to_list = fold (Fn.flip List.cons) []
 
 let equal a b =
-  match (a,b) with
-  | (Natural ra, Natural rb) -> ra.start = rb.start && ra.stop = rb.stop
-  | (Modified _, Modified _) -> List.equal (to_list a) (to_list b) ~equal:(=)
+  match (a, b) with
+  | Natural ra, Natural rb -> ra.start = rb.start && ra.stop = rb.stop
+  | Modified _, Modified _ -> List.equal (to_list a) (to_list b) ~equal:( = )
   | _ -> false
 
 let rec iter_loop r f n =
   if n > r.stop then ()
   else (
-    f n ; iter_loop r f (Int.succ n) )
+    f n ;
+    iter_loop r f (Int.succ n) )
 
 let iter f = function
   | Natural r -> iter_loop r f r.start
@@ -122,11 +123,15 @@ let map f = function
 
 let limit_to_string r = Int.(to_string r.start ^ ":" ^ to_string r.stop)
 
-let export_string r prefix = (^) prefix (limit_to_string r) 
+let export_string r prefix = prefix ^ limit_to_string r
 
 let to_string = function
   | Natural r -> export_string r "Nat:"
   | Modified (r, _) -> export_string r "Mod:"
-  
-let of_string _s = from 1 3
 
+let of_string s =
+  Option.value_exn
+    ~message:"Unrecognized string format"
+    (String.split ~on:':' s |> List.tl) 
+  |> List.map ~f:Int.of_string
+  |> function [start; stop] -> from start stop | _ -> assert false
