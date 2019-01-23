@@ -8,20 +8,18 @@ the Free Software Foundation, either version 3 of the License, or
 
 open Base
 
-type range_record = {start: int; stop: int}
+type limit = {start: int; stop: int}
 
-type t =
-  | Natural of range_record
-  | Modified of range_record * (int -> int option)
+type t = Natural of limit | Modified of limit * (int -> int option)
 
 type elt = int
 
 let no_common_area_msg = "There is no common area between the two ranges."
 
-let get_range_record_from = function Modified (r, _) -> r | Natural r -> r
+let get_limit_from = function Modified (r, _) -> r | Natural r -> r
 
 let implode f p =
-  let r = get_range_record_from p in
+  let r = get_limit_from p in
   f r.start r.stop
 
 let from start stop = Natural {start= min start stop; stop= max start stop}
@@ -34,7 +32,7 @@ let filter f =
 
 let is_natural = function Natural _ -> true | Modified _ -> false
 
-let reset r = Natural (get_range_record_from r)
+let reset r = Natural (get_limit_from r)
 
 let rec fold_by_loop {start; stop} step f acc n =
   if n > stop then acc
@@ -71,8 +69,7 @@ let equal a b =
 let rec iter_loop r f n =
   if n > r.stop then ()
   else (
-    f n ;
-    iter_loop r f (Int.succ n) )
+    f n ; iter_loop r f (Int.succ n) )
 
 let iter f = function
   | Natural r -> iter_loop r f r.start
@@ -105,7 +102,7 @@ let pair_map f (a, b) = (f a, f b)
 let agg_exn f a b = Option.value_exn ~message:no_common_area_msg (f a b)
 
 let gen_agg flow fhigh a b =
-  let ra, rb = pair_map get_range_record_from (a, b) in
+  let ra, rb = pair_map get_limit_from (a, b) in
   if ra.stop < rb.start || rb.stop < ra.start then None
   else Some (from (flow ra.start rb.start) (fhigh ra.stop rb.stop))
 
@@ -123,10 +120,13 @@ let map f = function
       let new_f n = Option.(n |> f_filter >>= fun n -> f n |> some) in
       Modified (r, new_f)
 
-let range_record_to_string r = Int.(to_string r.start ^ ":" ^ to_string r.stop)
+let limit_to_string r = Int.(to_string r.start ^ ":" ^ to_string r.stop)
 
-let export_string r prefix = (^) prefix (range_record_to_string r) 
+let export_string r prefix = (^) prefix (limit_to_string r) 
 
 let to_string = function
   | Natural r -> export_string r "Nat:"
   | Modified (r, _) -> export_string r "Mod:"
+  
+let of_string _s = from 1 3
+

@@ -24,6 +24,7 @@ type elt=int
 (** t type correspond to a integer range value *)
 
 include Equal.S with type t := t
+include Stringable.S with type t := t
 
 val from : elt -> elt -> t
 (** from start_value stop_value : will create a t value representing the range
