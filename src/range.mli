@@ -38,8 +38,8 @@ val from : elt -> elt -> t
 
 val filter : (elt -> bool) -> t -> t
 (** filter f range : will create a new Range.t value using predicate function
-    f. This modifies the behaviour of iter or fold funtions
-    in order to apply only to values that satisfies the predicate.
+    f. This modifies the behaviour of iter or fold function in order to apply
+    only to values that satisfies the predicate.
 
     @param f the predicate is attached to the range value, the predicate
     must respect the signature int -> bool
