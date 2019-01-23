@@ -15,7 +15,7 @@ dev-repo: "git+https://github.com/aldrikfr/range"
 bug-reports :"https://github.com/aldrikfr/range/issues"
 url {
    src:
-     "https://github.com/aldrikfr/range/archive/0.4.tar.gz"
+     "https://github.com/aldrikfr/range/archive/0.5.tar.gz"
    checksum:
    "md5=5bf6414b906ea8be72efe2990dd7b13c"
  }
