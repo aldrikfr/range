@@ -1,5 +1,5 @@
-(* Range library for making easy folding on a sequence of integers
-Copyright (C) 2018 Aldrik KLEBER
+(** Range library for making easy folding on a sequence of integers
+Copyright (C) 2018,2019 Aldrik KLEBER
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -46,14 +46,14 @@ val filter : (elt -> bool) -> t -> t
     @param range range to be filtered, if the range provided has already a filter, the new
     range value will merge the two filters.
     @return new Range.t value with a new filter added.
-    **)
+    *)
 
 val reset : t -> t
 (** remove all map and filter effects from a range.
 
     @param old Range.t value
     @return new Range.t value from parameter without modifiers.
-   **)
+   *)
 
 val is_natural : t -> bool
 (** is filtered predicate
@@ -61,7 +61,7 @@ val is_natural : t -> bool
     test if a Range.t value contain a filter or map function transforming data.
     @param Range.t value to test
     @return test true if there is a filter false otherwise
-   **)
+   *)
 
 val fold : ('a -> elt -> 'a) -> 'a -> t -> 'a
 (** fold the equivalent of List.fold_left applied to integer range_record
@@ -73,7 +73,7 @@ val fold : ('a -> elt -> 'a) -> 'a -> t -> 'a
     @param f function aggregating the accumulator to the current value.
     @param acc initial value of the accumulator
     @param range explored range value
-    @return value of the accumulator after reading all elements **)
+    @return value of the accumulator after reading all elements *)
 
 val iter : (elt -> unit) -> t -> unit
 (** iter apply a function with side effect on all values of the range. This
@@ -82,7 +82,7 @@ val iter : (elt -> unit) -> t -> unit
     @param f function receiving an integer and returning unit
     @param range value
     @return unit
-   **)
+   *)
 
 val split : elt -> elt -> t -> t list
 (** split a range value into a list of smaller range, useful for batching in
@@ -93,7 +93,7 @@ val split : elt -> elt -> t -> t list
     @param range value to split
     @return list of ranges with a size of minimal or greater, the list having
     count elements max.
-    **)
+    *)
 
 val contain : elt -> t -> bool
 (** contain function to test if an integer value is contained in a Range.t values
@@ -101,7 +101,7 @@ val contain : elt -> t -> bool
     @param element to be tested
     @param reference range value
     @return true if element is contained in reference
-    **)
+    *)
 
 val cross : t -> t -> t Option.t
 (** new Range.t value representing the common value between two Range.t values.
@@ -110,11 +110,11 @@ val cross : t -> t -> t Option.t
     @param b Range.t value
     @return option value with Range.t option type value defined by the common
     values, None if it is impossible to find common values.
-    **)
+    *)
 
 val cross_exn : t -> t -> t
 (** Same as cross function with exception for error handling.
-   **)
+   *)
 
 val join : t -> t -> t Option.t
 (** Join to generate a new Range.t value contained both a and b
@@ -122,12 +122,12 @@ val join : t -> t -> t Option.t
     @param a Range.t value
     @param b Range.t value
     @return Range.t option value containing both a and b.
-    If a and b are disjoint, they can't be joinded so None is returned .
-   **)
+    If a and b are disjoint, they can't be joinded so None is returned.
+   *)
 
 val join_exn : t -> t -> t
 (** Same as join with exception for error handling
-   **)
+   *)
 
 val map : (elt -> elt) -> t -> t
 (** apply f to elements contained in a Range.t value
@@ -138,4 +138,4 @@ val map : (elt -> elt) -> t -> t
     @param f function to apply to the content of a range value
     @param r range to modify
     @return updated range
-   **)
+   *)
