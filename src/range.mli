@@ -139,13 +139,3 @@ val map : (elt -> elt) -> t -> t
     @param r range to modify
     @return updated range
    **)
-
-val to_string : t -> string
-(** export limits of a range to a string.
-
-    The presence of functions that can modifiy the content is signaled by "Mod:"
-    prefix
-
-    @param r Range.t value to export in a string .
-    @return string representing the content of r Range.t value.
-   **)
