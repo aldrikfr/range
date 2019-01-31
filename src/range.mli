@@ -65,7 +65,7 @@ val is_natural : t -> bool
 
 val fold : ('a -> elt -> 'a) -> 'a -> t -> 'a
 (** fold the equivalent of List.fold_left applied to integer range_record
-    explore all the values contained in the rang value applying f to the
+    explore all the values contained in the range value applying f to the
     accumulator and the current element read by fold. If a filter was associated
     to the range value, only element validated by the predicate f will be passed
     to the function.
