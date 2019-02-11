@@ -1,5 +1,5 @@
 (* Range library for making easy folding on a sequence of integers
-Copyright (C) 2018 Aldrik KLEBER
+Copyright (C) 2018,2019 Aldrik KLEBER
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -132,6 +132,6 @@ let to_string = function
 let of_string s =
   Option.value_exn
     ~message:"Unrecognized string format"
-    (String.split ~on:':' s |> List.tl) 
+    (String.split ~on:':' s |> List.tl)
   |> List.map ~f:Int.of_string
   |> function [start; stop] -> from start stop | _ -> assert false
