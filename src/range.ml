@@ -34,10 +34,10 @@ let is_natural = function Natural _ -> true | Modified _ -> false
 
 let reset r = Natural (get_limit_from r)
 
-let rec fold_by_loop {start; stop} step f acc n =
-  if n > stop then acc
-  else if n = stop then f acc n
-  else fold_by_loop {start; stop} step f (f acc n) (min stop (n + step))
+let rec fold_by_loop r step f acc n =
+  if n > r.stop then acc
+  else if n = r.stop then f acc n
+  else fold_by_loop r step f (f acc n) (min r.stop (n + step))
 
 let fold_by step f acc = function
   | Natural r -> fold_by_loop r step f acc r.start
@@ -47,8 +47,8 @@ let fold_by step f acc = function
       in
       fold_by_loop r step f_with_filter acc r.start
 
-let rec fold_loop {start; stop} f acc n =
-  if n > stop then acc else fold_loop {start; stop} f (f acc n) (Int.succ n)
+let rec fold_loop r f acc n =
+  if n > r.stop then acc else fold_loop r f (f acc n) (Int.succ n)
 
 let fold f acc = function
   | Natural r -> fold_loop r f acc r.start
