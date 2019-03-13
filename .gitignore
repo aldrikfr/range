@@ -1,5 +1,6 @@
 .merlin
 _build
+_opam
 dune-project
 *.install
 *.cmi
