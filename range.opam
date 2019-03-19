@@ -1,6 +1,6 @@
 opam-version : "2.0"
 name : "range"
-version: "0.5"
+version: "0.6"
 synopsis: "Fold on integer range"
 description: """
 Library to work on range of sequential integers with features like : split, map,
@@ -15,7 +15,7 @@ dev-repo: "git+https://github.com/aldrikfr/range"
 bug-reports :"https://github.com/aldrikfr/range/issues"
 url {
    src:
-     "https://github.com/aldrikfr/range/archive/0.5.tar.gz"
+     "https://github.com/aldrikfr/range/archive/0.6.tar.gz"
    checksum:
    "md5=a76a23bebf32b8b1f62fdea1701c0ff4"
  }
