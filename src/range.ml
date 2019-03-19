@@ -63,7 +63,7 @@ let to_list = fold (Fn.flip List.cons) []
 let equal a b =
   match (a, b) with
   | Natural ra, Natural rb -> ra.start = rb.start && ra.stop = rb.stop
-  | Modified _, Modified _ -> List.equal Int.(=) (to_list a) (to_list b) 
+  | Modified _, Modified _ -> List.equal Int.( = ) (to_list a) (to_list b)
   | _ -> false
 
 let rec iter_loop r f n =
@@ -130,8 +130,7 @@ let to_string = function
   | Modified (r, _) -> export_string r "Mod:"
 
 let of_string s =
-  Option.value_exn
-    ~message:"Unrecognized string format"
+  Option.value_exn ~message:"Unrecognized string format"
     (String.split ~on:':' s |> List.tl)
   |> List.map ~f:Int.of_string
   |> function [start; stop] -> from start stop | _ -> assert false
