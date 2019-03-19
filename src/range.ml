@@ -63,7 +63,7 @@ let to_list = fold (Fn.flip List.cons) []
 let equal a b =
   match (a, b) with
   | Natural ra, Natural rb -> ra.start = rb.start && ra.stop = rb.stop
-  | Modified _, Modified _ -> List.equal (to_list a) (to_list b) ~equal:( = )
+  | Modified _, Modified _ -> List.equal Int.(=) (to_list a) (to_list b) 
   | _ -> false
 
 let rec iter_loop r f n =
