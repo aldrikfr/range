@@ -75,6 +75,17 @@ val fold : ('a -> elt -> 'a) -> 'a -> t -> 'a
     @param range explored range value
     @return value of the accumulator after reading all elements *)
 
+val fold_right : ('a -> elt -> 'a) -> 'a -> t -> 'a
+(** fold_right explore all the values contained in the range value, in reverse order, 
+    starting by the last value to the first one, applying f to the accumulator and 
+    the current element read by fold. If a filter was associated to the range value, 
+    only element validated by the predicate f will be passed to the function.
+
+    @param f function aggregating the accumulator to the current value.
+    @param acc initial value of the accumulator
+    @param range explored range value
+    @return value of the accumulator after reading all elements *)
+
 val iter : (elt -> unit) -> t -> unit
 (** iter apply a function with side effect on all values of the range. This
     function support filtering.

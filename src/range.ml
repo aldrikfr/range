@@ -50,6 +50,17 @@ let fold_by step f acc = function
 let rec fold_loop r f acc n =
   if n > r.stop then acc else fold_loop r f (f acc n) (Int.succ n)
 
+let rec fold_right_loop r f acc n = 
+  if n < r.start then acc else fold_right_loop r f (f acc n) (Int.pred n) 
+
+let fold_right f acc = function
+  | Natural r -> fold_loop r f acc r.stop
+  | Modified (r, f_filter) ->
+      let f_agg acc n =
+        n |> f_filter |> Option.value_map ~default:acc ~f:(f acc)
+      in
+      fold_right_loop r f_agg acc r.stop
+
 let fold f acc = function
   | Natural r -> fold_loop r f acc r.start
   | Modified (r, f_filter) ->
@@ -118,7 +129,7 @@ let join_exn = agg_exn join
 let map f = function
   | Natural r -> Modified (r, fun n -> Some (f n))
   | Modified (r, f_filter) ->
-      let new_f n = Option.(n |> f_filter >>= fun n -> f n |> some) in
+      let new_f n = Option.(f_filter n >>= fun n -> f n |> some) in
       Modified (r, new_f)
 
 let limit_to_string r = Int.(to_string r.start ^ ":" ^ to_string r.stop)
