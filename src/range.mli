@@ -21,7 +21,7 @@ The main goal is to :
 open Base
 type t
 type elt=int
-(** t type correspond to a integer range value *)
+(** t type correspond to an integer range value *)
 
 include Equal.S with type t := t
 include Stringable.S with type t := t
