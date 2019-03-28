@@ -16,6 +16,6 @@ Example of usage
      Range.(from 1 50 |> map ((+) 4) |> filter ((!=) 53) |> fold (+) 0 |> print_int);;
      
      (* implement a factorial function *)
-     let factorial n = Range.(from 2 n |> fold ( * ) 1 )
+     let factorial n = Range.(n |> abs |> from 1 |> fold ( * ) 1)
      
      API documentation available at : https://aldrikfr.github.io/range/
