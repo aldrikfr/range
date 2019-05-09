@@ -27,8 +27,10 @@ let from start stop = Natural {start= min start stop; stop= max start stop}
 let filter f =
   let open Option in
   function
-  | Natural r -> Modified (r, fun n -> some_if (f n) n)
-  | Modified (r, f_prev) -> Modified (r, Fn.compose (filter ~f) f_prev)
+  | Natural r ->
+      Modified (r, fun n -> some_if (f n) n)
+  | Modified (r, f_prev) ->
+      Modified (r, Fn.compose (filter ~f) f_prev)
 
 let is_natural = function Natural _ -> true | Modified _ -> false
 
@@ -40,21 +42,26 @@ let rec fold_by_loop r step f acc n =
   else fold_by_loop r step f (f acc n) (min r.stop (n + step))
 
 let fold_by step f acc = function
-  | Natural r -> fold_by_loop r step f acc r.start
+  | Natural r ->
+      fold_by_loop r step f acc r.start
   | Modified (r, f_filter) ->
       let f_with_filter acc n =
         n |> f_filter |> Option.value_map ~default:acc ~f:(f acc)
       in
       fold_by_loop r step f_with_filter acc r.start
 
-let rec fold_loop r f acc n =
-  if n > r.stop then acc else fold_loop r f (f acc n) (Int.succ n)
+let rec gen_fold_loop f_test f_next r f acc n =
+  if f_test n then acc
+  else gen_fold_loop f_test f_next r f (f acc n) (f_next n)
 
-let rec fold_right_loop r f acc n = 
-  if n < r.start then acc else fold_right_loop r f (f acc n) (Int.pred n) 
+let fold_loop r f acc n = gen_fold_loop (( < ) r.stop) Int.succ r f acc n
+
+let fold_right_loop r f acc n =
+  gen_fold_loop (( > ) r.start) Int.pred r f acc n
 
 let fold_right f acc = function
-  | Natural r -> fold_loop r f acc r.stop
+  | Natural r ->
+      fold_right_loop r f acc r.stop
   | Modified (r, f_filter) ->
       let f_agg acc n =
         n |> f_filter |> Option.value_map ~default:acc ~f:(f acc)
@@ -62,7 +69,8 @@ let fold_right f acc = function
       fold_right_loop r f_agg acc r.stop
 
 let fold f acc = function
-  | Natural r -> fold_loop r f acc r.start
+  | Natural r ->
+      fold_loop r f acc r.start
   | Modified (r, f_filter) ->
       let f_agg acc n =
         n |> f_filter |> Option.value_map ~default:acc ~f:(f acc)
@@ -73,9 +81,12 @@ let to_list = fold (Fn.flip List.cons) []
 
 let equal a b =
   match (a, b) with
-  | Natural ra, Natural rb -> ra.start = rb.start && ra.stop = rb.stop
-  | Modified _, Modified _ -> List.equal Int.( = ) (to_list a) (to_list b)
-  | _ -> false
+  | Natural ra, Natural rb ->
+      ra.start = rb.start && ra.stop = rb.stop
+  | Modified _, Modified _ ->
+      List.equal Int.( = ) (to_list a) (to_list b)
+  | _ ->
+      false
 
 let rec iter_loop r f n =
   if n > r.stop then ()
@@ -84,7 +95,8 @@ let rec iter_loop r f n =
     iter_loop r f (Int.succ n) )
 
 let iter f = function
-  | Natural r -> iter_loop r f r.start
+  | Natural r ->
+      iter_loop r f r.start
   | Modified (r, f_filter) ->
       let f_with_filter n = n |> f_filter |> Option.value_map ~default:() ~f in
       iter_loop r f_with_filter r.start
@@ -101,13 +113,16 @@ let split minimal n r =
       match acc with
       | Some (next_start, result) ->
           Some (Int.succ n, from next_start n :: result)
-      | None -> Some (n, [])
+      | None ->
+          Some (n, [])
     in
     r |> fold_by pack_size f None |> Option.value_map ~default:[] ~f:snd
 
 let contain e = function
-  | Natural r -> r.start <= e && e <= r.stop
-  | Modified _ as data -> fold (fun acc n -> n = e || acc) false data
+  | Natural r ->
+      r.start <= e && e <= r.stop
+  | Modified _ as data ->
+      fold (fun acc n -> n = e || acc) false data
 
 let pair_map f (a, b) = (f a, f b)
 
@@ -127,7 +142,8 @@ let join = gen_agg min max
 let join_exn = agg_exn join
 
 let map f = function
-  | Natural r -> Modified (r, fun n -> Some (f n))
+  | Natural r ->
+      Modified (r, fun n -> Some (f n))
   | Modified (r, f_filter) ->
       let new_f n = Option.(f_filter n >>= fun n -> f n |> some) in
       Modified (r, new_f)
@@ -137,8 +153,10 @@ let limit_to_string r = Int.(to_string r.start ^ ":" ^ to_string r.stop)
 let export_string r prefix = prefix ^ limit_to_string r
 
 let to_string = function
-  | Natural r -> export_string r "Nat:"
-  | Modified (r, _) -> export_string r "Mod:"
+  | Natural r ->
+      export_string r "Nat:"
+  | Modified (r, _) ->
+      export_string r "Mod:"
 
 let of_string s =
   Option.value_exn ~message:"Unrecognized string format"
