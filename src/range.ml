@@ -24,13 +24,11 @@ let implode f p =
 
 let from start stop = Natural {start= min start stop; stop= max start stop}
 
-let filter f =
-  let open Option in
-  function
+let filter f = function
   | Natural r ->
-      Modified (r, fun n -> some_if (f n) n)
+      Modified (r, fun n -> Option.some_if (f n) n)
   | Modified (r, f_prev) ->
-      Modified (r, Fn.compose (filter ~f) f_prev)
+      Modified (r, Fn.compose (Option.filter ~f) f_prev)
 
 let is_natural = function Natural _ -> true | Modified _ -> false
 
