@@ -17,7 +17,3 @@ depends: [
   "dune" {>= "1.8"}
 ]
 build: ["dune" "build" "-p" name "-j" jobs]
-url {
-   src: "https://github.com/aldrikfr/range/archive/0.8.tar.gz"
-   checksum: "md5=7c2c1befc1e46ba344324edcd0188f3b"
-}
