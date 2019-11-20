@@ -13,11 +13,11 @@ dev-repo: "git+https://github.com/aldrikfr/range"
 bug-reports :"https://github.com/aldrikfr/range/issues"
 depends: [
   "ocaml" {>= "4.03.0"}
-  "base" {>= "v0.12"}
+  "base" { >="v0.12" & <"v0.14"}
   "dune" {>= "1.8"}
 ]
 build: ["dune" "build" "-p" name "-j" jobs]
 url {
-   src: "https://github.com/aldrikfr/range/archive/0.7.tar.gz"
+   src: "https://github.com/aldrikfr/range/archive/0.8.tar.gz"
    checksum: "md5=af7fe8fd6bcda8bb2b850a496aaa6ee8"
 }
