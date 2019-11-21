@@ -81,10 +81,7 @@ let equal a b =
   match (a, b) with
   | Natural ra, Natural rb ->
       ra.start = rb.start && ra.stop = rb.stop
-  | Modified _, Modified _ ->
-      List.equal Int.( = ) (to_list a) (to_list b)
-  | _ ->
-      false
+  | _  ->  List.equal Int.( = ) (to_list a) (to_list b)
 
 let rec iter_loop r f n =
   if n > r.stop then ()
