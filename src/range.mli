@@ -19,6 +19,8 @@ type elt=int
 include Equal.S with type t := t
 include Stringable.S with type t := t
 
+val length : t -> Int.t
+
 val from : elt -> elt -> t
 (** from start_value stop_value : will create a t value representing the range
     described by the two values given in parameter.
