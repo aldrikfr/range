@@ -3,7 +3,7 @@ open Base
 
 type modifiers = { 
     r : Limit.t ;
-    f : (int -> int option)
+    f_filter : (int -> int option)
 }
 
 type t = Natural of Limit.t | Modified of modifiers 
@@ -18,9 +18,9 @@ let from start stop = Natural (Limit.from start stop)
 
 let filter f = function
   | Natural r ->
-      Modified {r;f=( fun n -> Option.some_if (f n) n)}
+      Modified {r ; f_filter=( fun n -> Option.some_if (f n) n)}
   | Modified m -> 
-      Modified {r=m.r ; f=(Fn.compose (Option.filter ~f) m.f)}
+      Modified {r=m.r ; f_filter=(Fn.compose (Option.filter ~f) m.f_filter)}
 
 let is_natural = function Natural _ -> true | Modified _ -> false
 
@@ -29,7 +29,7 @@ let reset r = Natural (get_limit_from r)
 let fold_by step f acc = function
   | Natural r ->
       Limit.fold_by_loop r step f acc r.start
-  | Modified {r; f=f_filter} ->
+  | Modified {r ; f_filter} ->
       let f_with_filter acc n =
         n |> f_filter |> Option.value_map ~default:acc ~f:(f acc)
       in
@@ -39,7 +39,7 @@ let fold_by step f acc = function
 let fold_right f acc = function
   | Natural r ->
       Limit.fold_right_loop r f acc r.stop
-  | Modified {r; f=f_filter} ->
+  | Modified {r ; f_filter} ->
       let f_agg acc n =
         n |> f_filter |> Option.value_map ~default:acc ~f:(f acc)
       in
@@ -48,7 +48,7 @@ let fold_right f acc = function
 let fold f acc = function
   | Natural r ->
       Limit.fold_loop r f acc r.start
-  | Modified {r; f=f_filter} ->
+  | Modified {r ; f_filter} ->
       let f_agg acc n =
         n |> f_filter |> Option.value_map ~default:acc ~f:(f acc)
       in
@@ -65,7 +65,7 @@ let equal a b =
 let iter f = function
   | Natural r ->
       Limit.iter_loop r f r.start
-  | Modified {r; f=f_filter} ->
+  | Modified {r ; f_filter} ->
       let f_with_filter n = n |> f_filter |> Option.value_map ~default:() ~f in
       Limit.iter_loop r f_with_filter r.start
 
@@ -114,10 +114,10 @@ let join_exn = agg_exn join
 
 let map f = function
   | Natural r ->
-      Modified {r; f=fun n -> Some (f n)}
-  | Modified {r; f=f_filter} ->
+      Modified {r; f_filter=fun n -> Some (f n)}
+  | Modified {r; f_filter} ->
       let new_f n = Option.(f_filter n >>= fun n -> f n |> some) in
-      Modified {r; f=new_f}
+      Modified {r; f_filter=new_f}
 
 let export_string r prefix = prefix ^ Limit.to_string r
 
