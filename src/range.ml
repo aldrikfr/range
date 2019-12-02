@@ -1,21 +1,26 @@
 (* SPDX-License-Identifier: GPL-3.0-or-later *)
 open Base
 
-type t = Natural of Limit.t | Modified of Limit.t * (int -> int option)
+type modifiers = { 
+    r : Limit.t ;
+    f : (int -> int option)
+}
+
+type t = Natural of Limit.t | Modified of modifiers 
 
 type elt = int
 
 let no_common_area_msg = "There is no common area between the two ranges."
 
-let get_limit_from = function Modified (r, _) -> r | Natural r -> r
+let get_limit_from = function Modified {r; _} -> r | Natural r -> r
 
 let from start stop = Natural (Limit.from start stop)
 
 let filter f = function
   | Natural r ->
-      Modified (r, fun n -> Option.some_if (f n) n)
-  | Modified (r, f_prev) ->
-      Modified (r, Fn.compose (Option.filter ~f) f_prev)
+      Modified {r;f=( fun n -> Option.some_if (f n) n)}
+  | Modified m -> 
+      Modified {r=m.r ; f=(Fn.compose (Option.filter ~f) m.f)}
 
 let is_natural = function Natural _ -> true | Modified _ -> false
 
@@ -24,7 +29,7 @@ let reset r = Natural (get_limit_from r)
 let fold_by step f acc = function
   | Natural r ->
       Limit.fold_by_loop r step f acc r.start
-  | Modified (r, f_filter) ->
+  | Modified {r; f=f_filter} ->
       let f_with_filter acc n =
         n |> f_filter |> Option.value_map ~default:acc ~f:(f acc)
       in
@@ -34,7 +39,7 @@ let fold_by step f acc = function
 let fold_right f acc = function
   | Natural r ->
       Limit.fold_right_loop r f acc r.stop
-  | Modified (r, f_filter) ->
+  | Modified {r; f=f_filter} ->
       let f_agg acc n =
         n |> f_filter |> Option.value_map ~default:acc ~f:(f acc)
       in
@@ -43,7 +48,7 @@ let fold_right f acc = function
 let fold f acc = function
   | Natural r ->
       Limit.fold_loop r f acc r.start
-  | Modified (r, f_filter) ->
+  | Modified {r; f=f_filter} ->
       let f_agg acc n =
         n |> f_filter |> Option.value_map ~default:acc ~f:(f acc)
       in
@@ -60,7 +65,7 @@ let equal a b =
 let iter f = function
   | Natural r ->
       Limit.iter_loop r f r.start
-  | Modified (r, f_filter) ->
+  | Modified {r; f=f_filter} ->
       let f_with_filter n = n |> f_filter |> Option.value_map ~default:() ~f in
       Limit.iter_loop r f_with_filter r.start
 
@@ -109,18 +114,18 @@ let join_exn = agg_exn join
 
 let map f = function
   | Natural r ->
-      Modified (r, fun n -> Some (f n))
-  | Modified (r, f_filter) ->
+      Modified {r; f=fun n -> Some (f n)}
+  | Modified {r; f=f_filter} ->
       let new_f n = Option.(f_filter n >>= fun n -> f n |> some) in
-      Modified (r, new_f)
+      Modified {r; f=new_f}
 
 let export_string r prefix = prefix ^ Limit.to_string r
 
 let to_string = function
   | Natural r ->
       export_string r "Nat:"
-  | Modified (r, _) ->
-      export_string r "Mod:"
+  | Modified m ->
+      export_string m.r "Mod:"
 
 let of_string s =
   Option.value_exn ~message:"Unrecognized string format"
