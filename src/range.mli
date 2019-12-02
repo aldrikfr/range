@@ -1,11 +1,4 @@
-(** Range library for making easy folding on a sequence of integers
-Copyright (C) 2018,2019 Aldrik KLEBER
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version. *)
-
+(* SPDX-License-Identifier:  GPL-3.0-or-later *)
 (** Range module provide a type for handling the description of an integer
 sequence described by a start value and a stop value. This module provide
 functions to fold, filter and map this range.
