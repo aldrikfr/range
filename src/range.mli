@@ -1,4 +1,6 @@
 (* SPDX-License-Identifier:  GPL-3.0-or-later *)
+
+open Base
 (** Range module provide a type for handling the description of an integer
 sequence described by a start value and a stop value. This module provide
 functions to fold, filter and map this range.
@@ -11,12 +13,14 @@ The main goal is to :
 
 @author Aldrik KLEBER <contact@aldrik.net>
 *)
-open Base
+
 type t
-type elt=int
+
+type elt = int
 (** t type correspond to an integer range value *)
 
 include Equal.S with type t := t
+
 include Stringable.S with type t := t
 
 val from : elt -> elt -> t
@@ -60,7 +64,7 @@ val length : t -> Int.t
 (**
 length range_value : return the number of elements contained in rang_value
 
-    @range_value : range_value of type t
+    @param range_value : range_value of type t
     @return Int.t with the number of elements
 *)
 
