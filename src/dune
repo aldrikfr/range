@@ -1,5 +1,4 @@
 (library
- (name        range)
+ (name range)
  (public_name range)
- (libraries base)
- )
+ (libraries base))
