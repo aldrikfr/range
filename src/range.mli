@@ -19,8 +19,6 @@ type elt=int
 include Equal.S with type t := t
 include Stringable.S with type t := t
 
-val length : t -> Int.t
-
 val from : elt -> elt -> t
 (** from start_value stop_value : will create a t value representing the range
     described by the two values given in parameter.
@@ -57,6 +55,14 @@ val is_natural : t -> bool
     @param Range.t value to test
     @return test true if there is a filter false otherwise
    *)
+
+val length : t -> Int.t
+(**
+length range_value : return the number of elements contained in rang_value
+
+    @range_value : range_value of type t
+    @return Int.t with the number of elements
+*)
 
 val fold : ('a -> elt -> 'a) -> 'a -> t -> 'a
 (** fold the equivalent of List.fold_left applied to integer range_record
