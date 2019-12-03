@@ -10,7 +10,7 @@ let natural_modified_consistency_tests =
     let data_b = from 2 5 |> map Int.succ in
     assert_bool "equality failed" (equal data_a data_b)
   );
-  ("Issue #nnn : length of a range must consider modified use cases" >:: fun ctxt ->
+  ("Issue #2 : length of a range must consider modified use cases" >:: fun ctxt ->
     let open Range in
     let data = from 6 10 |> filter (fun x -> x <> 8 )in
     let expected  = 4 in
