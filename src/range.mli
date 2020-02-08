@@ -33,12 +33,12 @@ val from : elt -> elt -> t
 
  *)
 
-val filter : (elt -> bool) -> t -> t
+val filter : t -> f:(elt -> bool) -> t
 (** filter f range : will create a new Range.t value using predicate function
     f. This modifies the behaviour of iter or fold function in order to apply
     only to values that satisfies the predicate.
 
-    @param f the predicate is attached to the range value, the predicate
+    @param ~f the predicate is attached to the range value, the predicate
     must respect the signature int -> bool
     @param range range to be filtered, if the range provided has already a filter, the new
     range value will merge the two filters.
@@ -68,7 +68,7 @@ length range_value : return the number of elements contained in rang_value
     @return Int.t with the number of elements
 *)
 
-val fold : ('a -> elt -> 'a) -> 'a -> t -> 'a
+val fold : 'a -> t -> f:('a -> elt -> 'a) -> 'a
 (** fold the equivalent of List.fold_left applied to integer range_record
     explore all the values contained in the range value applying f to the
     accumulator and the current element read by fold. If a filter was associated
@@ -80,7 +80,7 @@ val fold : ('a -> elt -> 'a) -> 'a -> t -> 'a
     @param range explored range value
     @return value of the accumulator after reading all elements *)
 
-val fold_right : ('a -> elt -> 'a) -> 'a -> t -> 'a
+val fold_right : 'a -> t -> f:('a -> elt -> 'a) -> 'a
 (** fold_right explore all the values contained in the range value, in reverse order,
     starting by the last value to the first one, applying f to the accumulator and
     the current element read by fold. If a filter was associated to the range value,
@@ -91,7 +91,7 @@ val fold_right : ('a -> elt -> 'a) -> 'a -> t -> 'a
     @param range explored range value
     @return value of the accumulator after reading all elements *)
 
-val iter : (elt -> unit) -> t -> unit
+val iter : t -> f:(elt -> unit) -> unit
 (** iter apply a function with side effect on all values of the range. This
     function support filtering.
 
@@ -145,7 +145,7 @@ val join_exn : t -> t -> t
 (** Same as join with exception for error handling
    *)
 
-val map : (elt -> elt) -> t -> t
+val map : t -> f:(elt -> elt) -> t
 (** apply f to elements contained in a Range.t value
 
     This feature used a delayed application of f. Like for filters, f is stacked

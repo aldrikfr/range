@@ -13,7 +13,8 @@ let get_limit_from = function Modified { r; _ } -> r | Natural r -> r
 
 let from start stop = Natural (Limit.from start stop)
 
-let filter f = function
+let filter r ~f =
+  match r with
   | Natural r -> Modified { r; f_filter = (fun n -> Option.some_if (f n) n) }
   | Modified m ->
       Modified { r = m.r; f_filter = Fn.compose (Option.filter ~f) m.f_filter }
@@ -30,7 +31,8 @@ let fold_by step f acc = function
       in
       Limit.fold_by_loop r step f_with_filter acc r.start
 
-let fold_right f acc = function
+let fold_right acc r ~f =
+  match r with
   | Natural r -> Limit.fold_right_loop r f acc r.stop
   | Modified { r; f_filter } ->
       let f_agg acc n =
@@ -38,7 +40,8 @@ let fold_right f acc = function
       in
       Limit.fold_right_loop r f_agg acc r.stop
 
-let fold f acc = function
+let fold acc r ~f =
+  match r with
   | Natural r -> Limit.fold_loop r f acc r.start
   | Modified { r; f_filter } ->
       let f_agg acc n =
@@ -46,14 +49,15 @@ let fold f acc = function
       in
       Limit.fold_loop r f_agg acc r.start
 
-let to_list = fold (Fn.flip List.cons) []
+let to_list = fold ~f:(Fn.flip List.cons) []
 
 let equal a b =
   match (a, b) with
   | Natural ra, Natural rb -> ra.start = rb.start && ra.stop = rb.stop
   | _ -> List.equal Int.( = ) (to_list a) (to_list b)
 
-let iter f = function
+let iter r ~f =
+  match r with
   | Natural r -> Limit.iter_loop r f r.start
   | Modified { r; f_filter } ->
       let f_with_filter n = n |> f_filter |> Option.value_map ~default:() ~f in
@@ -80,7 +84,7 @@ let split minimal n r =
 
 let contain e = function
   | Natural r -> r.start <= e && e <= r.stop
-  | Modified _ as data -> fold (fun acc n -> n = e || acc) false data
+  | Modified _ as data -> fold ~f:(fun acc n -> n = e || acc) false data
 
 let pair_map f (a, b) = (f a, f b)
 
@@ -99,7 +103,8 @@ let join = gen_agg min max
 
 let join_exn = agg_exn join
 
-let map f = function
+let map r ~f =
+  match r with
   | Natural r -> Modified { r; f_filter = (fun n -> Some (f n)) }
   | Modified { r; f_filter } ->
       let new_f n = Option.(f_filter n >>= fun n -> f n |> some) in
