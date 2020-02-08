@@ -112,8 +112,8 @@ let to_string = function
   | Modified m -> export_string m.r "Mod:"
 
 let of_string s =
-  Option.value_exn ~message:"Unrecognized string format"
-    (String.split ~on:':' s |> List.tl)
+  s |> String.split ~on:':' |> List.tl |> fun f ->
+  Option.value_exn ~message:"Unrecognized string format" f
   |> List.map ~f:Int.of_string
   |> function
   | [ start; stop ] -> from start stop
