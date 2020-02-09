@@ -1,4 +1,4 @@
-(lang dune 2.0)
+(lang dune 2.2)
 (name range)
 (version "0.8.2")
 (source (github aldrikfr/range))
