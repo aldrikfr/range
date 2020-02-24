@@ -104,10 +104,11 @@ let join = gen_agg min max
 let join_exn = agg_exn join
 
 let map r ~f =
+  let open Option in
   match r with
-  | Natural r -> Modified { r; f_filter = (fun n -> Some (f n)) }
+  | Natural r -> Modified { r; f_filter = Fn.compose some f }
   | Modified { r; f_filter } ->
-      let new_f n = Option.(f_filter n >>= fun n -> f n |> some) in
+      let new_f n = f_filter n >>= Fn.compose some f in
       Modified { r; f_filter = new_f }
 
 let export_string r prefix = prefix ^ Limit.to_string r
