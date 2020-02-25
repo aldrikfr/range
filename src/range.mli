@@ -19,6 +19,22 @@ type t
 type elt = int
 (** t type correspond to an integer range value *)
 
+module Number : sig
+  type 'a t
+
+  val gtz_from_int : int -> [ `Greater_than_zero ] t Option.t
+
+  val gtz_from_int_exn : int -> [ `Greater_than_zero ] t
+
+  val positive_from_int : int -> [ `Positive ] t Option.t
+
+  val positive_from_int_exn : int -> [ `Positive ] t
+
+  val to_int : 'a t -> int
+end
+
+(**  'a number type is an integer with constraints **)
+
 include Equal.S with type t := t
 
 include Stringable.S with type t := t
@@ -60,7 +76,7 @@ val is_natural : t -> bool
     @return test true if there is a filter false otherwise
    *)
 
-val length : t -> Int.t
+val length : t -> [ `Positive ] Number.t
 (**
 length range_value : return the number of elements contained in rang_value
 
@@ -100,7 +116,11 @@ val iter : t -> f:(elt -> unit) -> unit
     @return unit
    *)
 
-val split : elt -> elt -> t -> t list
+val split :
+  [ `Greater_than_zero ] Number.t ->
+  [ `Greater_than_zero ] Number.t ->
+  t ->
+  t list
 (** split a range value into a list of smaller range, useful for batching in
     parallel processing.
 

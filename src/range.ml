@@ -5,6 +5,36 @@ type modifiers = { r : Limit.t; f_filter : int -> int option }
 
 type t = Natural of Limit.t | Modified of modifiers
 
+module Number : sig
+  type 'a t = int
+
+  val gtz_from_int : int -> [ `Greater_than_zero ] t Option.t
+
+  val gtz_from_int_exn : int -> [ `Greater_than_zero ] t
+
+  val positive_from_int : int -> [ `Positive ] t Option.t
+
+  val positive_from_int_exn : int -> [ `Positive ] t
+
+  val to_int : 'a t -> int
+end = struct
+  type 'a t = int
+
+  let pass_through f x = if f x then Some x else None
+
+  let gtz_from_int = pass_through (( < ) 0)
+
+  let gtz_from_int_exn x =
+    Option.value_exn ~message:"Integer not greater than zero" (gtz_from_int x)
+
+  let positive_from_int = pass_through (( > ) 0)
+
+  let positive_from_int_exn x =
+    Option.value_exn ~message:"Integer not positive" (positive_from_int x)
+
+  let to_int x = x
+end
+
 type elt = int
 
 let no_common_area_msg = "There is no common area between the two ranges."
