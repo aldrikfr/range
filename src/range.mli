@@ -76,7 +76,7 @@ val is_natural : t -> bool
     @return test true if there is a filter false otherwise
    *)
 
-val length : t -> [ `Positive ] Number.t
+val length : t -> Int.t
 (**
 length range_value : return the number of elements contained in rang_value
 
