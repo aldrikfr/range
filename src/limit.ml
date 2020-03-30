@@ -7,7 +7,7 @@ let from start stop = { start = min start stop; stop = max start stop }
 let rec fold_by_loop r step f acc n =
   if n > r.stop then acc
   else if n = r.stop then f acc n
-  else fold_by_loop r step f (f acc n) (min r.stop (n + step))
+  else fold_by_loop r step f (f acc n) (n + step)
 
 let rec gen_fold_loop f_test f_next r f acc n =
   if f_test n then acc else gen_fold_loop f_test f_next r f (f acc n) (f_next n)
@@ -26,4 +26,4 @@ let to_string r = Int.(to_string r.start ^ ":" ^ to_string r.stop)
 
 let implode f p = f p.start p.stop
 
-let length = implode (fun start stop -> stop - start)
+let length = implode (fun start stop -> stop - start + 1)

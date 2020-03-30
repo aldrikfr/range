@@ -95,8 +95,12 @@ let iter r ~f =
 
 let length p =
   match p with
-  | Natural r -> r.stop - r.start
+  | Natural r -> Limit.length r
   | Modified _ -> to_list p |> List.length
+
+let contain e = function
+  | Natural r -> r.start <= e && e <= r.stop
+  | Modified _ as data -> fold ~f:(fun acc n -> n = e || acc) false data
 
 let split minimal n r =
   let big_enough minimal n size = n >= minimal && size > minimal in
@@ -104,17 +108,17 @@ let split minimal n r =
   let pack_size = Float.(of_int diff / of_int n |> round_up |> Int.of_float) in
   if not (big_enough minimal pack_size diff) then [ r ]
   else
-    let f acc n =
-      match acc with
-      | Some (next_start, result) ->
-          Some (Int.succ n, from next_start n :: result)
-      | None -> Some (n, [])
+    let f acc start =
+      let nominal_end = start + pack_size - 1 in
+      let r_end =
+        if contain nominal_end r then nominal_end
+        else
+          let limit = get_limit_from r in
+          limit.stop
+      in
+      from start r_end :: acc
     in
-    r |> fold_by pack_size f None |> Option.value_map ~default:[] ~f:snd
-
-let contain e = function
-  | Natural r -> r.start <= e && e <= r.stop
-  | Modified _ as data -> fold ~f:(fun acc n -> n = e || acc) false data
+    fold_by pack_size f [] r
 
 let pair_map f (a, b) = (f a, f b)
 

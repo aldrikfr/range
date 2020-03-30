@@ -15,9 +15,9 @@ The main goal is to :
 *)
 
 type t
+(** t type correspond to an integer range value *)
 
 type elt = int
-(** t type correspond to an integer range value *)
 
 module Number : sig
   type 'a t
