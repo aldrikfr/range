@@ -168,10 +168,10 @@ val join_exn : t -> t -> t
 val map : t -> f:(elt -> elt) -> t
 (** apply f to elements contained in a Range.t value
 
-    This feature used a delayed application of f. Like for filters, f is stacked
+    This feature uses a delayed application of f. Like for filters, f is stacked
     on previous filter or map functions.
 
-    @param f function to apply to the content of a range value
+    @param f function applied to range contents
     @param r range to modify
     @return updated range
    *)
