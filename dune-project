@@ -1,6 +1,6 @@
 (lang dune 2.2)
 (name range)
-(version "0.8.2")
+(version "0.9~dev")
 (source (github aldrikfr/range))
 (license GPL-3.0-or-later)
 (authors "Aldrik KLEBER")
@@ -17,7 +17,7 @@ Designed for making distributed computing easier with libraries like functory.
 ")
  (depends
   (ocaml (>= 4.02) )
-  (base (and (>= 0.12) (<= 0.14)) )
+  (base (and (>= v0.12) (<= v0.14)) )
   (dune (>= 1.11) )
   (ounit :with-test)
   ))
