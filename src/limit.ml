@@ -1,6 +1,7 @@
 (* SPDX-License-Identifier: GPL-3.0-or-later *)
+open Base
 
-type t = { start : int; stop : int }
+type t = { start : Int.t; stop : Int.t }
 
 let from start stop = { start = min start stop; stop = max start stop }
 

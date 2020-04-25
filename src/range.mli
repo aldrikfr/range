@@ -17,14 +17,14 @@ The main goal is to :
 type t
 (** t type correspond to an integer range value *)
 
-type elt = int
+type elt = Int.t
 
 module Number : sig
   type 'a t
 
-  val gtz_from_int : int -> [ `Greater_than_zero ] t Option.t
+  val gtz_from_int : Int.t -> [ `Greater_than_zero ] t Option.t
 
-  val gtz_from_int_exn : int -> [ `Greater_than_zero ] t
+  val gtz_from_int_exn : Int.t -> [ `Greater_than_zero ] t
 
   val positive_from_int : int -> [ `Positive ] t Option.t
 

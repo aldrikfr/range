@@ -6,31 +6,31 @@ type modifiers = { r : Limit.t; f_filter : int -> int option }
 type t = Natural of Limit.t | Modified of modifiers
 
 module Number : sig
-  type 'a t = int
+  type 'a t = Int.t
 
-  val gtz_from_int : int -> [ `Greater_than_zero ] t Option.t
+  val gtz_from_int : Int.t -> [ `Greater_than_zero ] t Option.t
 
-  val gtz_from_int_exn : int -> [ `Greater_than_zero ] t
+  val gtz_from_int_exn : Int.t -> [ `Greater_than_zero ] t
 
-  val positive_from_int : int -> [ `Positive ] t Option.t
+  val positive_from_int : Int.t -> [ `Positive ] t Option.t
 
-  val positive_from_int_exn : int -> [ `Positive ] t
+  val positive_from_int_exn : Int.t -> [ `Positive ] t
 
-  val to_int : 'a t -> int
+  val to_int : 'a t -> Int.t
 end = struct
-  type 'a t = int
+  type 'a t = Int.t
 
   let pass_through f x = if f x then Some x else None
 
   let gtz_from_int = pass_through (( < ) 0)
 
   let gtz_from_int_exn x =
-    Option.value_exn ~message:"Integer not greater than zero" (gtz_from_int x)
+    Option.value_exn ~message:"Int.Teger not greater than zero" (gtz_from_int x)
 
   let positive_from_int = pass_through (( > ) 0)
 
   let positive_from_int_exn x =
-    Option.value_exn ~message:"Integer not positive" (positive_from_int x)
+    Option.value_exn ~message:"Int.Teger not positive" (positive_from_int x)
 
   let to_int x = x
 end
