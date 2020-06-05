@@ -17,7 +17,7 @@ Designed for making distributed computing easier with libraries like functory.
 ")
  (depends
   (ocaml (>= 4.02) )
-  (base (and (>= v0.12) (< v0.14)) )
+  (base (and (>= v0.12) (< v0.15)) )
   (dune (>= 2.2) )
   (ounit :with-test)
   ))
