@@ -25,12 +25,12 @@ end = struct
   let gtz_from_int = pass_through (( < ) 0)
 
   let gtz_from_int_exn x =
-    Option.value_exn ~message:"Int.Teger not greater than zero" (gtz_from_int x)
+    Option.value_exn ~message:"Integer not greater than zero" (gtz_from_int x)
 
   let positive_from_int = pass_through (( > ) 0)
 
   let positive_from_int_exn x =
-    Option.value_exn ~message:"Int.Teger not positive" (positive_from_int x)
+    Option.value_exn ~message:"Integer not positive" (positive_from_int x)
 
   let to_int x = x
 end
