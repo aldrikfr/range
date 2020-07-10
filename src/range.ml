@@ -20,7 +20,7 @@ module Number : sig
 end = struct
   type 'a t = Int.t
 
-  let pass_through f x = if f x then Some x else None
+  let pass_through f x = Option.some_if (f x) x 
 
   let gtz_from_int = pass_through (( < ) 0)
 
