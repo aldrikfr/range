@@ -17,6 +17,13 @@ let natural_modified_consistency_tests =
       let expected = 4 in
       assert_equal ~cmp:Int.equal ~printer:Int.to_string ~ctxt expected
         (length data) );
+    ( "Issue #6 : split must handler modifiers"
+    >:: fun ctxt ->
+      let open Range in
+      let data = from 1 1000 |> map ~f:( (+) 3 ) |> Number.(split (gtz_from_int_exn 1) (gtz_from_int_exn 2)) |> List.map ~f:to_string |> String.concat ~sep:" " in
+      let expected = "Mod:501:1000 Mod:1:500" in
+      assert_equal ~cmp:String.equal ~printer:(fun x -> x) ~ctxt expected
+        data );
   ]
 
 let discovered_bugs =

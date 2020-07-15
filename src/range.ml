@@ -116,9 +116,15 @@ let split minimal n r =
           let limit = get_limit_from r in
           limit.stop
       in
-      from start r_end :: acc
+      (from start r_end 
+       |> fun x -> 
+          match r with 
+          | Natural _ -> x 
+          | Modified m -> Modified ( {r=(get_limit_from x); f_filter=m.f_filter} )
+      ):: acc
     in
-    fold_by pack_size f [] r
+    let start = get_limit_from r |> fun x -> x.start in
+    Limit.fold_by_loop (get_limit_from r) pack_size f [] start
 
 let pair_map f (a, b) = (f a, f b)
 

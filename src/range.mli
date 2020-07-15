@@ -68,6 +68,8 @@ val reset : t -> t
     @return new Range.t value from parameter without modifiers.
    *)
 
+val fold_by : elt -> ('a -> elt -> 'a) -> 'a -> t -> 'a
+
 val is_natural : t -> bool
 (** is filtered predicate
 
