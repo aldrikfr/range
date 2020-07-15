@@ -53,14 +53,6 @@ let is_natural = function Natural _ -> true | Modified _ -> false
 
 let reset r = Natural (get_limit_from r)
 
-let fold_by step f acc = function
-  | Natural r -> Limit.fold_by_loop r step f acc r.start
-  | Modified { r; f_filter } ->
-      let f_with_filter acc n =
-        n |> f_filter |> Option.value_map ~default:acc ~f:(f acc)
-      in
-      Limit.fold_by_loop r step f_with_filter acc r.start
-
 let fold_right acc r ~f =
   match r with
   | Natural r -> Limit.fold_right_loop r f acc r.stop
